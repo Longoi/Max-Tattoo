@@ -868,7 +868,12 @@ function getChips(containerId) {
 
 // ── SIGNATURE ────────────────────────────────────────────
 const canvas = document.getElementById('sigCanvas');
-const sigPad = new SignaturePad(canvas, { penColor: '#0c0c0c', minWidth: 1.2, maxWidth: 2.8 });
+const sigPad = new SignaturePad(canvas, { 
+    penColor: '#0c0c0c', 
+    backgroundColor: 'rgb(243, 243, 243)', // Matches your --off CSS color
+    minWidth: 1.2, 
+    maxWidth: 2.8 
+});
 
 function resizeCanvas() {
   const ratio = Math.max(window.devicePixelRatio || 1, 1);
@@ -1094,7 +1099,7 @@ function buildPDF() {
   const sigH = 34;
   doc.setDrawColor(216,216,216); doc.setLineWidth(0.3);
   doc.rect(m, y, cw, sigH);
-  doc.addImage(sigPad.toDataURL('image/png'), 'PNG', m + 2, y + 1, cw - 4, sigH - 2);
+  doc.addImage(sigPad.toDataURL('image/jpeg', 0.6), 'JPEG', m + 2, y + 1, cw - 4, sigH - 2);
   y += sigH + 6;
   doc.setFontSize(6.5); doc.setTextColor(180,180,180);
   doc.text('Erstellt: ' + dateStr + ' — Dieses Dokument wurde digital ausgefüllt und unterschrieben.', m, y);
