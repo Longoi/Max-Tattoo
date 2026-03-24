@@ -3,577 +3,824 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Einverständniserklärung</title>
+<title>Einverständniserklärung — Tätowierung</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.7/signature_pad.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Jost:wght@300;400;500&display=swap');
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #f7f4ef;
-  --ink: #1a1410;
-  --ink-light: #5a5248;
-  --gold: #b8955a;
-  --gold-light: #e8dcc8;
-  --line: #d4c9b8;
-  --surface: #ffffff;
-  --error: #8b2020;
+  --black:   #0c0c0c;
+  --white:   #fafafa;
+  --off:     #f3f3f3;
+  --border:  #d8d8d8;
+  --mid:     #888888;
+  --light:   #ececec;
+  --error:   #c0392b;
 }
 
-html { font-size: 16px; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
 body {
-  font-family: 'Jost', sans-serif;
-  background: var(--bg);
-  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--black);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── HEADER ── */
 .header {
-  background: var(--ink);
-  color: var(--bg);
-  padding: 40px 32px 32px;
+  background: var(--black);
+  color: var(--white);
+  padding: 56px 40px 48px;
   text-align: center;
   position: relative;
-  overflow: hidden;
+  border-bottom: 1px solid #222;
 }
-.header::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 80px);
-}
-.header-ornament {
-  font-size: 11px;
+.header-studio {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
   letter-spacing: 6px;
   text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 300;
-  margin-bottom: 12px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 20px;
 }
 .header h1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(28px, 6vw, 42px);
-  font-weight: 300;
-  letter-spacing: 2px;
-  line-height: 1.1;
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 7vw, 58px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--white);
 }
 .header-sub {
-  font-size: 12px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-top: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
   font-weight: 300;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-top: 14px;
 }
-.gold-rule {
-  width: 60px; height: 1px;
-  background: var(--gold);
-  margin: 16px auto 0;
+.header-rule {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.2);
+  margin: 20px auto 0;
 }
 
+/* ── LAYOUT ── */
 .form-wrapper {
-  max-width: 680px;
+  max-width: 700px;
   margin: 0 auto;
-  padding: 32px 20px 60px;
+  padding: 0 20px 80px;
 }
 
+/* ── SECTION ── */
 .section {
-  margin-bottom: 28px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  margin-top: -1px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  position: relative;
+  transition: box-shadow 0.2s;
 }
+.section:first-child { margin-top: 40px; }
+.section + .section { margin-top: 16px; }
+
 .section-header {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 18px 24px 16px;
-  border-bottom: 1px solid var(--line);
-  background: #fdfbf8;
+  gap: 16px;
+  padding: 20px 28px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--off);
+  cursor: default;
 }
-.section-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--gold);
-  line-height: 1;
-  min-width: 28px;
+.section-index {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--mid);
+  min-width: 32px;
+  text-transform: uppercase;
 }
 .section-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 19px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: var(--ink);
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
   flex: 1;
 }
 .badge {
+  font-family: 'DM Sans', sans-serif;
   font-size: 9px;
+  font-weight: 500;
   letter-spacing: 2px;
   text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 2px;
-  font-weight: 500;
+  padding: 4px 9px;
+  border-radius: 1px;
 }
-.badge-required { background: var(--ink); color: var(--bg); }
-.badge-optional { background: var(--gold-light); color: var(--gold); }
+.badge-req { background: var(--black); color: var(--white); }
+.badge-opt { background: var(--light); color: var(--mid); }
 
-.section-body { padding: 22px 24px; }
+.section-body { padding: 28px; }
 
-.field-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
+/* ── FIELDS ── */
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .field-grid .full { grid-column: 1 / -1; }
+.field { display: flex; flex-direction: column; gap: 7px; }
 
-.field { display: flex; flex-direction: column; gap: 6px; }
 .field label {
-  font-size: 10px;
-  letter-spacing: 2px;
+  font-family: 'Syne', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--ink-light);
-  font-weight: 500;
+  color: var(--mid);
 }
-.field input, .field textarea {
-  font-family: 'Jost', sans-serif;
-  font-size: 15px;
-  font-weight: 300;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  padding: 11px 14px;
-  color: var(--ink);
+.field input, .field textarea, .field select {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 1px;
+  padding: 12px 14px;
+  color: var(--black);
   width: 100%;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.15s, background 0.15s;
   -webkit-appearance: none;
 }
-.field input:focus, .field textarea:focus {
-  border-color: var(--ink);
-  box-shadow: 0 0 0 2px rgba(26,20,16,0.06);
-}
-.field input.error { border-color: var(--error); }
+.field input:focus, .field textarea:focus { border-color: var(--black); background: var(--white); }
+.field input.err, .field textarea.err { border-color: var(--error); }
+.field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
 
+/* ── PROSE ── */
 .prose {
-  font-size: 14px;
-  line-height: 1.75;
-  color: var(--ink-light);
+  font-size: 13.5px;
+  line-height: 1.8;
   font-weight: 300;
+  color: #444;
 }
-.prose strong { color: var(--ink); font-weight: 500; }
-.prose ul {
-  margin: 10px 0 0 0;
-  padding-left: 0;
-  list-style: none;
+.prose strong { color: var(--black); font-weight: 500; }
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--light); margin: 22px 0; }
+
+/* ── MEDICAL QUESTION ── */
+.med-question {
+  padding: 16px 0;
+  border-top: 1px solid var(--light);
+}
+.med-question:first-of-type { border-top: none; padding-top: 0; }
+
+.med-q-label {
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--black);
+  margin-bottom: 12px;
+}
+.med-q-label strong { font-weight: 600; }
+
+.yn-group {
   display: flex;
+  gap: 8px;
+  margin-bottom: 0;
+}
+.yn-btn {
+  font-family: 'Syne', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 1px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--mid);
+  transition: all 0.15s;
+}
+.yn-btn:hover { border-color: var(--black); color: var(--black); }
+.yn-btn.active-yes { background: var(--black); border-color: var(--black); color: var(--white); }
+.yn-btn.active-no  { background: var(--black); border-color: var(--black); color: var(--white); }
+.yn-btn.err-border { border-color: var(--error); }
+
+.med-expand {
+  margin-top: 14px;
+  padding: 18px;
+  background: var(--off);
+  border-left: 2px solid var(--black);
+  display: none;
   flex-direction: column;
-  gap: 7px;
+  gap: 14px;
+  animation: slideDown 0.2s ease;
 }
-.prose ul li {
-  padding-left: 18px;
-  position: relative;
-  font-size: 14px;
-  line-height: 1.6;
-}
-.prose ul li::before {
-  content: '—';
-  position: absolute;
-  left: 0;
-  color: var(--gold);
+.med-expand.open { display: flex; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ── ALLERGY CHIPS ── */
+.allergy-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.allergy-chip {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 7px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 40px;
+  cursor: pointer;
+  background: var(--white);
+  color: var(--black);
+  transition: all 0.15s;
+  user-select: none;
+}
+.allergy-chip:hover { border-color: var(--black); }
+.allergy-chip.selected { background: var(--black); border-color: var(--black); color: var(--white); }
+
+.chip-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: 8px;
+}
+
+/* ── CHECKBOXES ── */
 .check-row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
-  border-top: 1px solid var(--line);
+  gap: 13px;
+  padding: 14px 0;
+  border-top: 1px solid var(--light);
 }
-.check-row.no-border { border-top: none; }
+.check-row.no-border { border-top: none; padding-top: 0; }
 
-.custom-check {
+.chk-box {
   width: 20px; height: 20px; min-width: 20px;
-  border: 1.5px solid var(--line);
-  border-radius: 2px;
-  background: var(--bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 1.5px solid var(--border);
+  border-radius: 1px;
+  background: var(--white);
+  display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   transition: all 0.15s;
   margin-top: 1px;
 }
-.custom-check.checked { background: var(--ink); border-color: var(--ink); }
-.custom-check svg { display: none; }
-.custom-check.checked svg { display: block; }
-.custom-check.error-check { border-color: var(--error); }
-.check-label {
-  font-size: 14px;
+.chk-box.on { background: var(--black); border-color: var(--black); }
+.chk-box svg { display: none; }
+.chk-box.on svg { display: block; }
+.chk-box.chk-err { border-color: var(--error); }
+
+.chk-label {
+  font-size: 13.5px;
   line-height: 1.65;
-  color: var(--ink);
-  font-weight: 300;
+  font-weight: 400;
+  color: var(--black);
   cursor: pointer;
 }
-.check-label strong { font-weight: 500; }
+.chk-label strong { font-weight: 600; }
+.chk-label small { font-size: 11.5px; color: var(--mid); display: block; margin-top: 2px; font-weight: 300; }
 
-.sig-label {
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--ink-light);
-  font-weight: 500;
-  margin-bottom: 10px;
-}
+/* ── SIGNATURE ── */
 .sig-wrap {
-  border: 1.5px solid var(--line);
-  border-radius: 2px;
-  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 1px;
+  background: var(--off);
   position: relative;
   overflow: hidden;
 }
-.sig-wrap.error-sig { border-color: var(--error); }
-.sig-wrap canvas {
-  display: block;
-  width: 100%;
-  height: 160px;
-  touch-action: none;
-}
+.sig-wrap.err-sig { border-color: var(--error); }
+.sig-wrap canvas { display: block; width: 100%; height: 150px; touch-action: none; cursor: crosshair; }
 .sig-hint {
-  position: absolute;
-  top: 50%; left: 50%;
+  position: absolute; top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--line);
-  pointer-events: none;
-  font-weight: 300;
-  white-space: nowrap;
+  font-family: 'Syne', sans-serif;
+  font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--border); pointer-events: none; white-space: nowrap;
 }
 .sig-hint.hidden { display: none; }
-.sig-clear {
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--ink-light);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px 0 0;
-  font-family: 'Jost', sans-serif;
+.sig-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 10px;
+}
+.sig-date {
+  font-size: 12px; color: var(--mid); font-weight: 300;
+}
+.sig-date strong { color: var(--black); font-weight: 500; }
+.btn-clear {
+  font-family: 'Syne', sans-serif;
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  background: none; border: none; cursor: pointer;
+  color: var(--mid); font-weight: 700;
+  text-decoration: underline; text-underline-offset: 3px;
+  padding: 0;
+}
+.btn-clear:hover { color: var(--black); }
+
+/* ── ERRORS ── */
+.err-msg {
+  font-size: 10.5px; color: var(--error);
+  letter-spacing: 0.3px; margin-top: 5px; display: none;
   font-weight: 400;
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
-.date-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 14px;
-  font-size: 13px;
-  color: var(--ink-light);
-}
-.date-row strong { color: var(--ink); font-weight: 500; }
+.err-msg.show { display: block; }
 
-.error-msg {
-  font-size: 11px;
-  color: var(--error);
-  letter-spacing: 0.5px;
-  margin-top: 4px;
-  display: none;
+/* ── AGB BOX ── */
+.agb-box {
+  background: var(--off);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  border-radius: 1px;
 }
-.error-msg.visible { display: block; }
+.agb-box-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  font-weight: 700; color: var(--mid); margin-bottom: 10px;
+}
+.agb-scroll {
+  max-height: 130px;
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 1.75;
+  color: #555;
+  font-weight: 300;
+  padding-right: 8px;
+}
+.agb-scroll::-webkit-scrollbar { width: 3px; }
+.agb-scroll::-webkit-scrollbar-track { background: var(--light); }
+.agb-scroll::-webkit-scrollbar-thumb { background: var(--border); }
 
-.submit-wrap { text-align: center; margin-top: 8px; }
+/* ── SUBMIT ── */
+.submit-wrap { padding: 32px 0 0; text-align: center; }
 .btn-submit {
-  font-family: 'Jost', sans-serif;
-  font-size: 11px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  font-weight: 500;
-  background: var(--ink);
-  color: var(--bg);
-  border: none;
-  padding: 18px 48px;
-  cursor: pointer;
-  border-radius: 2px;
+  font-family: 'Syne', sans-serif;
+  font-size: 10px; letter-spacing: 5px; text-transform: uppercase; font-weight: 700;
+  background: var(--black); color: var(--white);
+  border: none; padding: 20px 56px;
+  cursor: pointer; border-radius: 1px;
   transition: all 0.2s;
-  width: 100%;
-  max-width: 340px;
+  width: 100%; max-width: 380px;
 }
-.btn-submit:hover { background: #2d2620; }
-.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-submit:hover { background: #222; letter-spacing: 6px; }
+.btn-submit:disabled { opacity: 0.45; cursor: not-allowed; letter-spacing: 5px; }
 
+/* ── SUCCESS ── */
 .success-screen {
-  display: none;
-  text-align: center;
-  padding: 60px 32px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 2px;
+  display: none; text-align: center;
+  padding: 72px 32px;
+  border: 1px solid var(--border);
+  margin-top: 40px;
+  background: var(--white);
 }
-.success-screen.visible { display: block; }
-.success-icon {
-  width: 56px; height: 56px;
-  border-radius: 50%;
-  background: var(--ink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 20px;
+.success-screen.show { display: block; }
+.success-check {
+  width: 52px; height: 52px;
+  background: var(--black); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
 }
 .success-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 28px;
-  font-weight: 600;
-  margin-bottom: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 30px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: -0.5px; margin-bottom: 12px;
 }
 .success-sub {
-  font-size: 14px;
-  color: var(--ink-light);
-  font-weight: 300;
-  line-height: 1.7;
-  margin-bottom: 28px;
+  font-size: 14px; font-weight: 300; color: var(--mid);
+  line-height: 1.8; margin-bottom: 32px;
 }
 .btn-new {
-  font-family: 'Jost', sans-serif;
-  font-size: 11px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  font-weight: 500;
-  background: none;
-  color: var(--ink);
-  border: 1.5px solid var(--ink);
-  padding: 14px 32px;
-  cursor: pointer;
-  border-radius: 2px;
+  font-family: 'Syne', sans-serif;
+  font-size: 9px; letter-spacing: 4px; text-transform: uppercase; font-weight: 700;
+  background: none; color: var(--black);
+  border: 1.5px solid var(--black); padding: 14px 32px;
+  cursor: pointer; border-radius: 1px;
   transition: all 0.2s;
 }
-.btn-new:hover { background: var(--ink); color: var(--bg); }
+.btn-new:hover { background: var(--black); color: var(--white); }
 
-.form-footer {
+/* ── FOOTER ── */
+.footer {
   text-align: center;
   padding: 0 20px 40px;
-  font-size: 11px;
-  color: var(--line);
-  letter-spacing: 1px;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  color: var(--border);
+  text-transform: uppercase;
 }
 
-@media (max-width: 480px) {
+/* ── NOTE ── */
+.note {
+  font-size: 11.5px; font-weight: 300; color: var(--mid);
+  line-height: 1.7; margin-top: 10px;
+  padding: 12px 14px;
+  border-left: 2px solid var(--light);
+  background: var(--off);
+}
+.note strong { color: var(--black); font-weight: 500; }
+
+/* ── MOBILE ── */
+@media (max-width: 540px) {
   .field-grid { grid-template-columns: 1fr; }
   .field-grid .full { grid-column: 1; }
-  .section-body { padding: 18px 16px; }
-  .section-header { padding: 16px; }
-  .form-wrapper { padding: 20px 12px 60px; }
-  .header { padding: 32px 20px 24px; }
+  .section-body { padding: 20px 16px; }
+  .section-header { padding: 16px 18px; }
+  .form-wrapper { padding: 0 12px 80px; }
+  .header { padding: 40px 20px 36px; }
+  .section:first-child { margin-top: 28px; }
 }
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="header">
-  <div class="header-ornament">Studio · Dokument</div>
-  <h1>Einverständniserklärung</h1>
+  <div class="header-studio">Studio · Dokument</div>
+  <h1>Einverständnis&shy;erklärung</h1>
   <div class="header-sub">Tätowierung</div>
-  <div class="gold-rule"></div>
+  <div class="header-rule"></div>
 </div>
 
 <div class="form-wrapper" id="formWrapper">
 
-  <!-- 1. Persönliche Angaben -->
-  <div class="section">
+  <!-- ① PERSÖNLICHE ANGABEN -->
+  <div class="section" id="sec-personal">
     <div class="section-header">
-      <span class="section-num">1</span>
+      <span class="section-index">01</span>
       <span class="section-title">Persönliche Angaben</span>
-      <span class="badge badge-required">Pflichtfeld</span>
+      <span class="badge badge-req">Pflicht</span>
     </div>
     <div class="section-body">
       <div class="field-grid">
         <div class="field full">
           <label>Vor- und Nachname</label>
           <input type="text" id="name" placeholder="Max Mustermann" autocomplete="name">
-          <span class="error-msg" id="err-name">Bitte Namen eingeben</span>
+          <span class="err-msg" id="err-name">Bitte vollständigen Namen eingeben</span>
         </div>
         <div class="field">
           <label>Geburtsdatum</label>
           <input type="date" id="dob">
-          <span class="error-msg" id="err-dob">Bitte Geburtsdatum eingeben</span>
+          <span class="err-msg" id="err-dob">Bitte Geburtsdatum eingeben</span>
         </div>
         <div class="field">
           <label>Telefonnummer</label>
           <input type="tel" id="phone" placeholder="+49 123 456789">
-          <span class="error-msg" id="err-phone">Bitte Telefonnummer eingeben</span>
+          <span class="err-msg" id="err-phone">Bitte Telefonnummer eingeben</span>
         </div>
         <div class="field full">
           <label>Adresse</label>
-          <input type="text" id="address" placeholder="Musterstraße 1, 12345 Berlin">
-          <span class="error-msg" id="err-address">Bitte Adresse eingeben</span>
+          <input type="text" id="address" placeholder="Musterstraße 1, 12345 Stuttgart">
+          <span class="err-msg" id="err-address">Bitte Adresse eingeben</span>
         </div>
         <div class="field full">
           <label>E-Mail-Adresse</label>
           <input type="email" id="email" placeholder="max@beispiel.de">
-          <span class="error-msg" id="err-email">Bitte gültige E-Mail eingeben</span>
+          <span class="err-msg" id="err-email">Bitte gültige E-Mail eingeben</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 2. Gesundheitsangaben -->
-  <div class="section">
+  <!-- ② GESUNDHEITSANGABEN -->
+  <div class="section" id="sec-health">
     <div class="section-header">
-      <span class="section-num">2</span>
+      <span class="section-index">02</span>
       <span class="section-title">Gesundheitsangaben</span>
-      <span class="badge badge-required">Pflichtfeld</span>
+      <span class="badge badge-req">Pflicht</span>
     </div>
     <div class="section-body">
-      <p class="prose">Ich bestätige, dass ich den Tätowierer über alle relevanten gesundheitlichen Einschränkungen, Erkrankungen, Allergien oder die Einnahme von Medikamenten informiert habe.</p>
-      <div class="check-row no-border" style="margin-top:14px;">
-        <div class="custom-check" id="check-health" onclick="toggleCheck('check-health')">
-          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+      <div class="prose">Bitte beantworte alle Fragen sorgfältig und ehrlich. Diese Informationen sind <strong>vertraulich</strong> und ausschließlich für die sichere Durchführung deiner Tätowierung bestimmt.</div>
+
+      <div class="divider"></div>
+
+      <!-- Q1: Blutverdünner -->
+      <div class="med-question">
+        <div class="med-q-label"><strong>Nimmst du blutverdünnende Medikamente?</strong><br><span style="font-size:12px;color:var(--mid);font-weight:300;">z. B. ASS / Aspirin, Marcumar, Xarelto, Heparin</span></div>
+        <div class="yn-group">
+          <button class="yn-btn" id="q1-yes" onclick="setYN('q1',true)">Ja</button>
+          <button class="yn-btn" id="q1-no"  onclick="setYN('q1',false)">Nein</button>
         </div>
-        <span class="check-label" onclick="toggleCheck('check-health')">Ich bestätige die obige Erklärung zu meinem Gesundheitszustand.</span>
+        <span class="err-msg" id="err-q1">Bitte auswählen</span>
+        <div class="med-expand" id="q1-expand">
+          <div class="field">
+            <label>Welches Medikament? Dosierung?</label>
+            <input type="text" id="q1-text" placeholder="z. B. Marcumar 3 mg täglich">
+          </div>
+          <div class="note"><strong>Hinweis:</strong> Blutverdünner können das Blutungsrisiko erheblich erhöhen. Kläre dies unbedingt vorab mit deinem Arzt.</div>
+        </div>
       </div>
-      <span class="error-msg" id="err-health">Bitte bestätigen</span>
+
+      <!-- Q2: Andere Medikamente -->
+      <div class="med-question">
+        <div class="med-q-label"><strong>Nimmst du regelmäßig andere Medikamente ein?</strong><br><span style="font-size:12px;color:var(--mid);font-weight:300;">Verschreibungspflichtig oder freiverkäuflich</span></div>
+        <div class="yn-group">
+          <button class="yn-btn" id="q2-yes" onclick="setYN('q2',true)">Ja</button>
+          <button class="yn-btn" id="q2-no"  onclick="setYN('q2',false)">Nein</button>
+        </div>
+        <span class="err-msg" id="err-q2">Bitte auswählen</span>
+        <div class="med-expand" id="q2-expand">
+          <div class="field">
+            <label>Welche Medikamente?</label>
+            <textarea id="q2-text" placeholder="z. B. Metformin 500 mg, Ibuprofen bei Bedarf…" rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q3: Allergien -->
+      <div class="med-question">
+        <div class="med-q-label"><strong>Hast du bekannte Allergien?</strong><br><span style="font-size:12px;color:var(--mid);font-weight:300;">Auf Substanzen, Materialien, Medikamente oder Lebensmittel</span></div>
+        <div class="yn-group">
+          <button class="yn-btn" id="q3-yes" onclick="setYN('q3',true)">Ja</button>
+          <button class="yn-btn" id="q3-no"  onclick="setYN('q3',false)">Nein</button>
+        </div>
+        <span class="err-msg" id="err-q3">Bitte auswählen</span>
+        <div class="med-expand" id="q3-expand">
+          <div>
+            <div class="chip-label">Häufige Allergene — alles Zutreffende wählen</div>
+            <div class="allergy-grid">
+              <span class="allergy-chip" data-val="Latex" onclick="toggleChip(this)">Latex</span>
+              <span class="allergy-chip" data-val="Nickel" onclick="toggleChip(this)">Nickel / Metall</span>
+              <span class="allergy-chip" data-val="Farben/Pigmente" onclick="toggleChip(this)">Farben / Pigmente</span>
+              <span class="allergy-chip" data-val="Penicillin/Antibiotika" onclick="toggleChip(this)">Penicillin / Antibiotika</span>
+              <span class="allergy-chip" data-val="Desinfektionsmittel" onclick="toggleChip(this)">Desinfektionsmittel</span>
+              <span class="allergy-chip" data-val="Pflaster/Klebstoffe" onclick="toggleChip(this)">Pflaster / Klebstoffe</span>
+              <span class="allergy-chip" data-val="Sonstige" onclick="toggleChip(this)">Sonstiges</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Weitere Details / Anaphylaxie?</label>
+            <textarea id="q3-text" placeholder="Beschreibe deine Allergien und bisherige Reaktionen…" rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q4: Vorerkrankungen -->
+      <div class="med-question">
+        <div class="med-q-label"><strong>Leidest du unter Erkrankungen oder chronischen Beschwerden?</strong></div>
+        <div class="yn-group">
+          <button class="yn-btn" id="q4-yes" onclick="setYN('q4',true)">Ja</button>
+          <button class="yn-btn" id="q4-no"  onclick="setYN('q4',false)">Nein</button>
+        </div>
+        <span class="err-msg" id="err-q4">Bitte auswählen</span>
+        <div class="med-expand" id="q4-expand">
+          <div>
+            <div class="chip-label">Zutreffendes wählen</div>
+            <div class="allergy-grid">
+              <span class="allergy-chip" data-val="Diabetes" onclick="toggleChip(this)">Diabetes</span>
+              <span class="allergy-chip" data-val="Bluthochdruck" onclick="toggleChip(this)">Bluthochdruck</span>
+              <span class="allergy-chip" data-val="Herzerkrankung" onclick="toggleChip(this)">Herzerkrankung</span>
+              <span class="allergy-chip" data-val="Blutgerinnungsstörung" onclick="toggleChip(this)">Blutgerinnungsstörung</span>
+              <span class="allergy-chip" data-val="Hauterkrankung" onclick="toggleChip(this)">Hauterkrankung / Psoriasis</span>
+              <span class="allergy-chip" data-val="Epilepsie" onclick="toggleChip(this)">Epilepsie</span>
+              <span class="allergy-chip" data-val="HIV/Hepatitis" onclick="toggleChip(this)">HIV / Hepatitis</span>
+              <span class="allergy-chip" data-val="Immunschwäche" onclick="toggleChip(this)">Immunschwäche</span>
+              <span class="allergy-chip" data-val="Sonstige" onclick="toggleChip(this)">Sonstiges</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Details</label>
+            <textarea id="q4-text" placeholder="Weitere Informationen zu deinen Erkrankungen…" rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q5: Schwanger -->
+      <div class="med-question">
+        <div class="med-q-label"><strong>Bist du schwanger oder stillst du aktuell?</strong></div>
+        <div class="yn-group">
+          <button class="yn-btn" id="q5-yes" onclick="setYN('q5',true)">Ja</button>
+          <button class="yn-btn" id="q5-no"  onclick="setYN('q5',false)">Nein</button>
+        </div>
+        <span class="err-msg" id="err-q5">Bitte auswählen</span>
+        <div class="med-expand" id="q5-expand">
+          <div class="note" style="border-left-color:var(--error);"><strong>Wichtig:</strong> Tätowierungen werden während der Schwangerschaft und Stillzeit nicht empfohlen. Bitte kläre dies mit deinem Arzt und spreche mit dem Artist.</div>
+        </div>
+      </div>
+
+      <!-- Q6: Alkohol / Drogen -->
+      <div class="med-question">
+        <div class="med-q-label"><strong>Hast du heute Alkohol, Drogen oder betäubende Substanzen konsumiert?</strong><br><span style="font-size:12px;color:var(--mid);font-weight:300;">Einschließlich Cannabis</span></div>
+        <div class="yn-group">
+          <button class="yn-btn" id="q6-yes" onclick="setYN('q6',true)">Ja</button>
+          <button class="yn-btn" id="q6-no"  onclick="setYN('q6',false)">Nein</button>
+        </div>
+        <span class="err-msg" id="err-q6">Bitte auswählen</span>
+        <div class="med-expand" id="q6-expand">
+          <div class="note" style="border-left-color:var(--error);"><strong>Hinweis:</strong> Unter dem Einfluss von Alkohol oder Drogen wird keine Tätowierung durchgeführt. Der Termin wird in diesem Fall storniert.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Zustand-Bestätigungen -->
+      <div class="check-row no-border">
+        <div class="chk-box" id="chk-fit" onclick="toggleChk('chk-fit')">
+          <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5l3 3L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="chk-label" onclick="toggleChk('chk-fit')">
+          Ich bin körperlich fit und fühle mich heute gut. Ich habe ausreichend gegessen und genug geschlafen.
+          <small>Tätowierungen auf Nüchternmagen oder bei Erschöpfung können zu Kreislaufproblemen führen.</small>
+        </span>
+      </div>
+      <span class="err-msg" id="err-chk-fit">Bitte bestätigen</span>
+
+      <div class="check-row">
+        <div class="chk-box" id="chk-healthconfirm" onclick="toggleChk('chk-healthconfirm')">
+          <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5l3 3L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="chk-label" onclick="toggleChk('chk-healthconfirm')">
+          Ich bestätige, alle obigen Fragen wahrheitsgemäß beantwortet und alle mir bekannten gesundheitlichen Einschränkungen, Erkrankungen, Allergien und Medikamente angegeben zu haben.
+        </span>
+      </div>
+      <span class="err-msg" id="err-chk-healthconfirm">Bitte bestätigen</span>
+
     </div>
   </div>
 
-  <!-- 3. Aufklärung -->
+  <!-- ③ AUFKLÄRUNG -->
   <div class="section">
     <div class="section-header">
-      <span class="section-num">3</span>
+      <span class="section-index">03</span>
       <span class="section-title">Aufklärung</span>
-      <span class="badge badge-required">Pflichtfeld</span>
+      <span class="badge badge-req">Pflicht</span>
     </div>
     <div class="section-body">
-      <p class="prose">Ich wurde darüber aufgeklärt, dass:</p>
-      <div class="prose" style="margin-top:8px;">
-        <ul>
-          <li>eine Tätowierung <strong>dauerhaft</strong> ist</li>
-          <li>das endgültige Ergebnis vom Entwurf abweichen kann</li>
-          <li>es trotz höchster Hygienestandards zu Komplikationen kommen kann (z. B. Infektionen, allergische Reaktionen)</li>
-          <li>die <strong>Nachsorge entscheidend</strong> für das Ergebnis ist</li>
-        </ul>
-      </div>
-      <div class="check-row" style="margin-top:8px;">
-        <div class="custom-check" id="check-info" onclick="toggleCheck('check-info')">
-          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="prose">Ich wurde darüber aufgeklärt, dass:</div>
+      <div style="margin:14px 0; display:flex; flex-direction:column; gap:9px;">
+        <div style="display:flex;gap:12px;font-size:13.5px;font-weight:300;line-height:1.6;">
+          <span style="color:var(--mid);min-width:16px;font-weight:400;">—</span>
+          <span>eine Tätowierung <strong style="font-weight:600;">dauerhaft</strong> ist und eine vollständige Entfernung weder garantiert noch vorausgesetzt werden kann</span>
         </div>
-        <span class="check-label" onclick="toggleCheck('check-info')">Ich habe die obigen Informationen gelesen und verstanden.</span>
+        <div style="display:flex;gap:12px;font-size:13.5px;font-weight:300;line-height:1.6;">
+          <span style="color:var(--mid);min-width:16px;font-weight:400;">—</span>
+          <span>das endgültige Ergebnis vom Entwurf geringfügig abweichen kann, u. a. bedingt durch Hauttyp, Heilungsverlauf und individuelle Faktoren</span>
+        </div>
+        <div style="display:flex;gap:12px;font-size:13.5px;font-weight:300;line-height:1.6;">
+          <span style="color:var(--mid);min-width:16px;font-weight:400;">—</span>
+          <span>es trotz höchster Hygienestandards zu Komplikationen kommen kann, darunter Infektionen, allergische Reaktionen oder Abstoßungsreaktionen auf Farbpigmente</span>
+        </div>
+        <div style="display:flex;gap:12px;font-size:13.5px;font-weight:300;line-height:1.6;">
+          <span style="color:var(--mid);min-width:16px;font-weight:400;">—</span>
+          <span>die <strong style="font-weight:600;">Nachsorge entscheidend</strong> für Heilung und Ergebnis ist und ich die Pflegeanweisungen des Artists befolgen werde</span>
+        </div>
+        <div style="display:flex;gap:12px;font-size:13.5px;font-weight:300;line-height:1.6;">
+          <span style="color:var(--mid);min-width:16px;font-weight:400;">—</span>
+          <span>ich ausreichend Gelegenheit hatte, Fragen zu stellen, und alle meine Fragen zu meiner Zufriedenheit beantwortet wurden</span>
+        </div>
       </div>
-      <span class="error-msg" id="err-info">Bitte bestätigen</span>
+      <div class="check-row no-border" style="margin-top:8px;">
+        <div class="chk-box" id="chk-info" onclick="toggleChk('chk-info')">
+          <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5l3 3L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="chk-label" onclick="toggleChk('chk-info')">Ich habe die obigen Informationen gelesen, verstanden und hatte ausreichend Zeit, Fragen zu stellen.</span>
+      </div>
+      <span class="err-msg" id="err-chk-info">Bitte bestätigen</span>
     </div>
   </div>
 
-  <!-- 4. Einwilligung -->
+  <!-- ④ EINWILLIGUNG + AGB -->
   <div class="section">
     <div class="section-header">
-      <span class="section-num">4</span>
-      <span class="section-title">Einwilligung zur Tätowierung</span>
-      <span class="badge badge-required">Pflichtfeld</span>
+      <span class="section-index">04</span>
+      <span class="section-title">Einwilligung &amp; AGB</span>
+      <span class="badge badge-req">Pflicht</span>
     </div>
     <div class="section-body">
-      <p class="prose">Ich erkläre mich ausdrücklich mit der Durchführung der Tätowierung einverstanden. Mir ist bewusst, dass es sich hierbei um einen Eingriff in die körperliche Unversehrtheit handelt.</p>
-      <div class="check-row" style="margin-top:8px;">
-        <div class="custom-check" id="check-consent" onclick="toggleCheck('check-consent')">
-          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <p class="prose" style="margin-bottom:18px;">Ich erkläre mich ausdrücklich mit der Durchführung der Tätowierung einverstanden. Mir ist bewusst, dass es sich hierbei um einen Eingriff in die körperliche Unversehrtheit handelt.</p>
+
+      <!-- AGB Scrollbox -->
+      <div class="agb-box">
+        <div class="agb-box-title">Allgemeine Geschäftsbedingungen (AGB)</div>
+        <div class="agb-scroll">
+          <strong>§ 1 Geltungsbereich</strong><br>
+          Diese AGB gelten für alle Leistungen des Studios gegenüber Kunden. Mit der Beauftragung erkennt der Kunde diese Bedingungen an.<br><br>
+          <strong>§ 2 Terminvereinbarung &amp; Anzahlung</strong><br>
+          Termine sind verbindlich. Eine Anzahlung ist zur Bestätigung des Termins fällig und wird auf den Gesamtpreis angerechnet. Bei Nichterscheinen oder Absage weniger als 48 Stunden vor dem Termin verfällt die Anzahlung.<br><br>
+          <strong>§ 3 Preise &amp; Zahlung</strong><br>
+          Alle Preise verstehen sich als Endpreise. Die Zahlung erfolgt nach Abschluss der Tätowierung in bar oder auf Wunsch per Karte. Designs und aufgewandte Entwurfszeit werden separat berechnet, sofern nicht anders vereinbart.<br><br>
+          <strong>§ 4 Nachbesserungen</strong><br>
+          Eventuelle Korrekturen (Touch-ups) werden innerhalb von 3 Monaten nach Heilungsabschluss kostenlos durchgeführt, sofern die Pflegehinweise befolgt wurden. Schäden durch mangelhafte Nachsorge sind ausgeschlossen.<br><br>
+          <strong>§ 5 Haftung</strong><br>
+          Das Studio haftet nicht für Komplikationen, die auf eine unvollständige oder falsche Gesundheitsauskunft des Kunden zurückzuführen sind. Für atypische Heilungsverläufe, die durch individuelle Hautmerkmale oder Vorerkrankungen bedingt sind, übernimmt das Studio keine Haftung.<br><br>
+          <strong>§ 6 Hausrecht &amp; Mindestalter</strong><br>
+          Das Studio behält sich das Recht vor, Kunden abzulehnen. Das Mindestalter für Tätowierungen beträgt 18 Jahre. Ein gültiger Lichtbildausweis kann verlangt werden.<br><br>
+          <strong>§ 7 Urheberrecht</strong><br>
+          Alle vom Studio angefertigten Entwürfe unterliegen dem Urheberrechtsschutz. Eine Weitergabe oder Nutzung durch Dritte ist ohne schriftliche Zustimmung untersagt.
         </div>
-        <span class="check-label" onclick="toggleCheck('check-consent')">Ich willige ausdrücklich in die Durchführung der Tätowierung ein.</span>
       </div>
-      <span class="error-msg" id="err-consent">Bitte bestätigen</span>
+
+      <div class="check-row no-border">
+        <div class="chk-box" id="chk-consent" onclick="toggleChk('chk-consent')">
+          <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5l3 3L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="chk-label" onclick="toggleChk('chk-consent')">Ich willige ausdrücklich in die Durchführung der Tätowierung ein und erkenne die <strong>AGB</strong> des Studios vollumfänglich an.</span>
+      </div>
+      <span class="err-msg" id="err-chk-consent">Bitte bestätigen</span>
     </div>
   </div>
 
-  <!-- 5. Datenschutz -->
+  <!-- ⑤ DATENSCHUTZ -->
   <div class="section">
     <div class="section-header">
-      <span class="section-num">5</span>
+      <span class="section-index">05</span>
       <span class="section-title">Datenschutz</span>
-      <span class="badge badge-required">Pflichtfeld</span>
+      <span class="badge badge-req">Pflicht</span>
     </div>
     <div class="section-body">
-      <p class="prose">Ich habe die Datenschutzerklärung zur Kenntnis genommen und bin damit einverstanden, dass meine personenbezogenen Daten zum Zweck der Terminabwicklung, Dokumentation und Kundenverwaltung gespeichert und verarbeitet werden.</p>
-      <div class="check-row" style="margin-top:8px;">
-        <div class="custom-check" id="check-dsgvo" onclick="toggleCheck('check-dsgvo')">
-          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <p class="prose" style="margin-bottom:14px;">Ich habe die Datenschutzerklärung zur Kenntnis genommen und bin damit einverstanden, dass meine personenbezogenen Daten zum Zweck der Terminabwicklung, Dokumentation und Kundenverwaltung gespeichert und verarbeitet werden. Eine Weitergabe an Dritte erfolgt nicht.</p>
+      <div class="check-row no-border">
+        <div class="chk-box" id="chk-dsgvo" onclick="toggleChk('chk-dsgvo')">
+          <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5l3 3L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <span class="check-label" onclick="toggleCheck('check-dsgvo')">Ich habe die <strong>Datenschutzerklärung</strong> gelesen und stimme der Verarbeitung meiner Daten zu.</span>
+        <span class="chk-label" onclick="toggleChk('chk-dsgvo')">Ich habe die <strong>Datenschutzerklärung</strong> gelesen und stimme der Verarbeitung meiner Daten gemäß DSGVO zu.</span>
       </div>
-      <span class="error-msg" id="err-dsgvo">Bitte bestätigen</span>
+      <span class="err-msg" id="err-chk-dsgvo">Bitte bestätigen</span>
     </div>
   </div>
 
-  <!-- 6. Fotos & Videos -->
+  <!-- ⑥ FOTOS & VIDEOS (OPTIONAL) -->
   <div class="section">
     <div class="section-header">
-      <span class="section-num">6</span>
-      <span class="section-title">Nutzung von Fotos &amp; Videos</span>
-      <span class="badge badge-optional">Optional</span>
+      <span class="section-index">06</span>
+      <span class="section-title">Fotos &amp; Videos</span>
+      <span class="badge badge-opt">Optional</span>
     </div>
     <div class="section-body">
-      <p class="prose">Ich willige ein, dass im Rahmen meiner Tätowierung aufgenommene Fotos und/oder Videos meines Tattoos verwendet werden dürfen für:</p>
-      <div class="check-row no-border" style="margin-top:14px;">
-        <div class="custom-check" id="check-social" onclick="toggleCheck('check-social')">
-          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <p class="prose" style="margin-bottom:16px;">Ich willige ein, dass im Rahmen meiner Tätowierung aufgenommene Fotos und/oder Videos meines Tattoos verwendet werden dürfen für:</p>
+      <div class="check-row no-border">
+        <div class="chk-box" id="chk-social" onclick="toggleChk('chk-social')">
+          <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5l3 3L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <span class="check-label" onclick="toggleCheck('check-social')">Social Media (z. B. Instagram, TikTok)</span>
+        <span class="chk-label" onclick="toggleChk('chk-social')">Social Media <small>Instagram, TikTok und weitere Plattformen des Studios</small></span>
       </div>
       <div class="check-row">
-        <div class="custom-check" id="check-website" onclick="toggleCheck('check-website')">
-          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="chk-box" id="chk-website" onclick="toggleChk('chk-website')">
+          <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5l3 3L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <span class="check-label" onclick="toggleCheck('check-website')">Website des Studios</span>
+        <span class="chk-label" onclick="toggleChk('chk-website')">Website des Studios</span>
       </div>
       <div class="check-row">
-        <div class="custom-check" id="check-werbung" onclick="toggleCheck('check-werbung')">
-          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="chk-box" id="chk-werbung" onclick="toggleChk('chk-werbung')">
+          <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5l3 3L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <span class="check-label" onclick="toggleCheck('check-werbung')">Werbezwecke</span>
+        <span class="chk-label" onclick="toggleChk('chk-werbung')">Werbezwecke <small>z. B. Druckmaterialien, Kampagnen</small></span>
       </div>
-      <p class="prose" style="margin-top:16px; font-size:12px; border-top:1px solid var(--line); padding-top:14px;">
-        <strong>Hinweis:</strong> Diese Einwilligung kann jederzeit mit Wirkung für die Zukunft widerrufen werden.
-      </p>
+      <div class="note" style="margin-top:14px;"><strong>Hinweis:</strong> Diese Einwilligung kann jederzeit formlos mit Wirkung für die Zukunft widerrufen werden.</div>
     </div>
   </div>
 
-  <!-- Unterschrift -->
+  <!-- UNTERSCHRIFT -->
   <div class="section">
     <div class="section-header">
-      <span class="section-num">✦</span>
+      <span class="section-index">✦</span>
       <span class="section-title">Unterschrift</span>
-      <span class="badge badge-required">Pflichtfeld</span>
+      <span class="badge badge-req">Pflicht</span>
     </div>
     <div class="section-body">
-      <div class="sig-label">Bitte hier unterschreiben</div>
+      <div style="font-family:'Syne',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--mid);font-weight:700;margin-bottom:10px;">Bitte hier unterschreiben</div>
       <div class="sig-wrap" id="sigWrap">
         <canvas id="sigCanvas"></canvas>
         <div class="sig-hint" id="sigHint">Unterschrift</div>
       </div>
-      <button class="sig-clear" onclick="clearSig()">Löschen</button>
-      <span class="error-msg" id="err-sig">Bitte unterschreiben</span>
-      <div class="date-row">
-        <span>Datum:</span>
-        <strong id="dateDisplay"></strong>
+      <div class="sig-actions">
+        <div class="sig-date">Datum: <strong id="dateDisplay"></strong></div>
+        <button class="btn-clear" onclick="clearSig()">Löschen</button>
       </div>
+      <span class="err-msg" id="err-sig">Bitte unterschreiben</span>
     </div>
   </div>
 
-  <!-- Submit -->
+  <!-- SUBMIT -->
   <div class="submit-wrap" id="submitWrap">
     <button class="btn-submit" id="submitBtn" onclick="submitForm()">
-      Formular abschicken &amp; PDF erstellen
+      Abschicken &amp; PDF erstellen
     </button>
   </div>
 
-  <!-- Success -->
+  <!-- SUCCESS -->
   <div class="success-screen" id="successScreen">
-    <div class="success-icon">
-      <svg width="24" height="20" viewBox="0 0 24 20" fill="none"><path d="M2 10l7 7L22 2" stroke="#f7f4ef" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="success-check">
+      <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M2 9l6 6L20 2" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <div class="success-title">Vielen Dank</div>
     <div class="success-sub">Das Dokument wurde als PDF gespeichert.<br>Bitte dem Tätowierer aushändigen oder weiterleiten.</div>
@@ -582,270 +829,321 @@ body {
 
 </div>
 
-<div class="form-footer">Alle Angaben werden vertraulich behandelt · DSGVO-konform</div>
+<div class="footer">Alle Angaben werden vertraulich behandelt · DSGVO-konform</div>
 
 <script>
-// ── Checks ────────────────────────────────────────────────
-const checks = {};
-function toggleCheck(id) {
-  checks[id] = !checks[id];
-  document.getElementById(id).classList.toggle('checked', checks[id]);
-}
-function isChecked(id) { return !!checks[id]; }
+// ── STATE ──────────────────────────────────────────────────
+const chks = {};
+const yns  = {};  // true=ja, false=nein
+const chips = {}; // Set per question
 
-// ── Signature Pad ─────────────────────────────────────────
+function toggleChk(id) {
+  chks[id] = !chks[id];
+  document.getElementById(id).classList.toggle('on', chks[id]);
+}
+function isChk(id) { return !!chks[id]; }
+
+// ── YES/NO ────────────────────────────────────────────────
+function setYN(q, val) {
+  yns[q] = val;
+  document.getElementById(q+'-yes').className = 'yn-btn' + (val ? ' active-yes' : '');
+  document.getElementById(q+'-no').className  = 'yn-btn' + (!val ? ' active-no' : '');
+  document.getElementById(q+'-expand').classList.toggle('open', val);
+  document.getElementById('err-' + q).classList.remove('show');
+  // remove err borders
+  document.getElementById(q+'-yes').classList.remove('err-border');
+  document.getElementById(q+'-no').classList.remove('err-border');
+}
+function hasYN(q) { return yns[q] !== undefined; }
+
+// ── CHIPS ─────────────────────────────────────────────────
+function toggleChip(el) {
+  el.classList.toggle('selected');
+}
+function getChips(containerId) {
+  const chips = [];
+  document.querySelectorAll('#' + containerId + ' .allergy-chip.selected').forEach(c => chips.push(c.dataset.val));
+  return chips;
+}
+
+// ── SIGNATURE ────────────────────────────────────────────
 const canvas = document.getElementById('sigCanvas');
-const sigPad = new SignaturePad(canvas, {
-  penColor: '#1a1410',
-  minWidth: 1.2,
-  maxWidth: 2.8,
-});
+const sigPad = new SignaturePad(canvas, { penColor: '#0c0c0c', minWidth: 1.2, maxWidth: 2.8 });
 
 function resizeCanvas() {
   const ratio = Math.max(window.devicePixelRatio || 1, 1);
-  canvas.width = canvas.offsetWidth * ratio;
+  canvas.width  = canvas.offsetWidth * ratio;
   canvas.height = canvas.offsetHeight * ratio;
   canvas.getContext('2d').scale(ratio, ratio);
   sigPad.clear();
 }
-
-sigPad.addEventListener('beginStroke', () => {
-  document.getElementById('sigHint').classList.add('hidden');
-});
-
-function clearSig() {
-  sigPad.clear();
-  document.getElementById('sigHint').classList.remove('hidden');
-}
-
+sigPad.addEventListener('beginStroke', () => document.getElementById('sigHint').classList.add('hidden'));
+function clearSig() { sigPad.clear(); document.getElementById('sigHint').classList.remove('hidden'); }
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-// ── Date ──────────────────────────────────────────────────
+// ── DATE ──────────────────────────────────────────────────
 const today = new Date();
-const dateStr = today.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+const dateStr = today.toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'numeric' });
 document.getElementById('dateDisplay').textContent = dateStr;
 
-// ── Validation ────────────────────────────────────────────
-function showError(id, show) {
+// ── VALIDATION ───────────────────────────────────────────
+function showErr(id, show) {
   const el = document.getElementById('err-' + id);
-  if (el) el.classList.toggle('visible', show);
+  if (el) el.classList.toggle('show', show);
 }
-function markField(id, error) {
+function fieldErr(id, show) {
   const el = document.getElementById(id);
-  if (el) el.classList.toggle('error', error);
-}
-function markCheck(id, error) {
-  document.getElementById(id).classList.toggle('error-check', error);
+  if (el) el.classList.toggle('err', show);
 }
 
 function validate() {
   let ok = true;
 
-  const name = document.getElementById('name').value.trim();
-  const nameOk = name.length > 1;
-  markField('name', !nameOk); showError('name', !nameOk);
-  if (!nameOk) ok = false;
+  const nameOk = document.getElementById('name').value.trim().length > 1;
+  fieldErr('name', !nameOk); showErr('name', !nameOk); if (!nameOk) ok = false;
 
-  const dob = document.getElementById('dob').value;
-  const dobOk = !!dob;
-  markField('dob', !dobOk); showError('dob', !dobOk);
-  if (!dobOk) ok = false;
+  const dobOk = !!document.getElementById('dob').value;
+  fieldErr('dob', !dobOk); showErr('dob', !dobOk); if (!dobOk) ok = false;
 
-  const phone = document.getElementById('phone').value.trim();
-  const phoneOk = phone.length > 4;
-  markField('phone', !phoneOk); showError('phone', !phoneOk);
-  if (!phoneOk) ok = false;
+  const phoneOk = document.getElementById('phone').value.trim().length > 4;
+  fieldErr('phone', !phoneOk); showErr('phone', !phoneOk); if (!phoneOk) ok = false;
 
-  const address = document.getElementById('address').value.trim();
-  const addrOk = address.length > 4;
-  markField('address', !addrOk); showError('address', !addrOk);
-  if (!addrOk) ok = false;
+  const addrOk = document.getElementById('address').value.trim().length > 4;
+  fieldErr('address', !addrOk); showErr('address', !addrOk); if (!addrOk) ok = false;
 
-  const email = document.getElementById('email').value.trim();
-  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  markField('email', !emailOk); showError('email', !emailOk);
-  if (!emailOk) ok = false;
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value.trim());
+  fieldErr('email', !emailOk); showErr('email', !emailOk); if (!emailOk) ok = false;
 
-  [['check-health','health'],['check-info','info'],['check-consent','consent'],['check-dsgvo','dsgvo']].forEach(([chk, key]) => {
-    const chkOk = isChecked(chk);
-    markCheck(chk, !chkOk); showError(key, !chkOk);
-    if (!chkOk) ok = false;
+  // Medical yes/no questions
+  ['q1','q2','q3','q4','q5','q6'].forEach(q => {
+    const answered = hasYN(q);
+    showErr(q, !answered);
+    if (!answered) {
+      document.getElementById(q+'-yes').classList.toggle('err-border', true);
+      document.getElementById(q+'-no').classList.toggle('err-border', true);
+      ok = false;
+    }
+  });
+
+  // Checkboxes
+  ['chk-fit','chk-healthconfirm','chk-info','chk-consent','chk-dsgvo'].forEach(id => {
+    const c = isChk(id);
+    document.getElementById(id).classList.toggle('chk-err', !c);
+    showErr(id, !c);
+    if (!c) ok = false;
   });
 
   const sigOk = !sigPad.isEmpty();
-  document.getElementById('sigWrap').classList.toggle('error-sig', !sigOk);
-  showError('sig', !sigOk);
+  document.getElementById('sigWrap').classList.toggle('err-sig', !sigOk);
+  showErr('sig', !sigOk);
   if (!sigOk) ok = false;
 
   return ok;
 }
 
-// ── PDF ───────────────────────────────────────────────────
+// ── PDF GENERATION ────────────────────────────────────────
 function buildPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-  const m = 20;
-  const pw = 210;
-  const cw = pw - m * 2;
-  let y = 20;
-  const lh = 6;
+  const m = 18, pw = 210, cw = pw - m * 2;
+  let y = 22;
+  const lh = 5.5;
 
-  function txt(text, x, sy, maxW, size, style, color) {
+  function checkPage(needed) {
+    if (y + (needed || 8) > 276) { doc.addPage(); y = 20; return true; }
+    return false;
+  }
+  function addText(text, x, size, style, color) {
     doc.setFontSize(size);
     doc.setFont('helvetica', style || 'normal');
-    doc.setTextColor(...(color || [26,20,16]));
-    const lines = doc.splitTextToSize(text, maxW);
-    lines.forEach(line => {
-      if (sy > 272) { doc.addPage(); sy = 20; }
-      doc.text(line, x, sy);
-      sy += lh;
-    });
-    return sy;
+    doc.setTextColor(...(color || [12,12,12]));
+    const lines = doc.splitTextToSize(text, cw - (x - m));
+    lines.forEach(line => { checkPage(); doc.text(line, x, y); y += lh; });
+    return y;
   }
-
-  function rule(sy) {
-    doc.setDrawColor(212,201,184); doc.setLineWidth(0.3);
-    doc.line(m, sy, pw - m, sy);
-    return sy + 5;
+  function hRule() {
+    doc.setDrawColor(216,216,216); doc.setLineWidth(0.25);
+    doc.line(m, y, pw - m, y);
+    y += 4;
   }
-
-  function section(num, title, sy) {
-    if (sy > 255) { doc.addPage(); sy = 20; }
-    doc.setFillColor(253,251,248);
-    doc.rect(m, sy - 4, cw, 9, 'F');
-    doc.setFontSize(10); doc.setFont('helvetica','bold');
-    doc.setTextColor(184,149,90); doc.text(num, m + 2, sy + 2);
-    doc.setTextColor(26,20,16); doc.text(title, m + 12, sy + 2);
-    return sy + 11;
+  function sectionHead(num, title) {
+    checkPage(12);
+    y += 2;
+    doc.setFillColor(243,243,243);
+    doc.rect(m, y - 4, cw, 9, 'F');
+    doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.setTextColor(136,136,136); doc.text(num, m + 2, y + 1.5);
+    doc.setTextColor(12,12,12); doc.text(title.toUpperCase(), m + 14, y + 1.5);
+    y += 10;
+  }
+  function checkLine(label, checked) {
+    checkPage();
+    doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(12,12,12);
+    doc.text(checked ? '☑' : '☐', m, y);
+    doc.splitTextToSize(label, cw - 8).forEach(l => { doc.text(l, m + 6, y); y += lh; });
+  }
+  function ynLine(label, val, detail) {
+    checkPage();
+    doc.setFontSize(8.5); doc.setFont('helvetica','bold'); doc.setTextColor(12,12,12);
+    const lines = doc.splitTextToSize(label, cw - 24);
+    doc.text(lines, m, y);
+    doc.setFont('helvetica','normal');
+    const answer = val ? 'JA' : 'NEIN';
+    doc.setTextColor(val ? 180 : 136, val ? 30 : 136, val ? 30 : 136);
+    doc.text(answer, pw - m, y, { align:'right' });
+    doc.setTextColor(12,12,12);
+    y += lines.length * lh + 1;
+    if (val && detail) {
+      doc.setFontSize(8); doc.setFont('helvetica','italic'); doc.setTextColor(90,90,90);
+      doc.splitTextToSize(detail, cw - 6).forEach(l => { doc.text(l, m + 4, y); y += 4.8; });
+    }
+    y += 2;
   }
 
   // Header
-  doc.setFillColor(26,20,16);
-  doc.rect(0, 0, pw, 28, 'F');
-  doc.setFontSize(18); doc.setFont('helvetica','bold'); doc.setTextColor(247,244,239);
-  doc.text('EINVERSTÄNDNISERKLÄRUNG', pw/2, 13, { align: 'center' });
-  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(184,149,90);
-  doc.text('TÄTOWIERUNG', pw/2, 21, { align: 'center' });
-  y = 38;
+  doc.setFillColor(12,12,12);
+  doc.rect(0, 0, pw, 30, 'F');
+  doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.setTextColor(250,250,250);
+  doc.text('EINVERSTÄNDNISERKLÄRUNG', pw/2, 14, { align:'center' });
+  doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(136,136,136);
+  doc.text('TÄTOWIERUNG', pw/2, 22, { align:'center' });
+  y = 40;
 
-  const name = document.getElementById('name').value.trim();
-  const dob = document.getElementById('dob').value;
-  const dobFmt = dob ? new Date(dob + 'T12:00:00').toLocaleDateString('de-DE') : '';
+  const name     = document.getElementById('name').value.trim();
+  const dob      = document.getElementById('dob').value;
+  const dobFmt   = dob ? new Date(dob + 'T12:00:00').toLocaleDateString('de-DE') : '';
 
-  // 1.
-  y = section('1', 'Persönliche Angaben', y);
-  const fields = [
-    ['Name:', name, 22],
-    ['Geburtsdatum:', dobFmt, 36],
-    ['Telefon:', document.getElementById('phone').value.trim(), 20],
-    ['Adresse:', document.getElementById('address').value.trim(), 22],
-    ['E-Mail:', document.getElementById('email').value.trim(), 18],
-  ];
-  fields.forEach(([label, val, offset]) => {
-    doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(90,82,72);
-    doc.text(label, m, y);
-    doc.setTextColor(26,20,16); doc.setFont('helvetica','bold');
-    const vlines = doc.splitTextToSize(val, cw - offset);
-    vlines.forEach(vl => { doc.text(vl, m + offset, y); y += lh; });
+  // ── 1. Persönliche Angaben
+  sectionHead('01', 'Persönliche Angaben');
+  [
+    ['Name', name, 18],
+    ['Geburtsdatum', dobFmt, 30],
+    ['Telefon', document.getElementById('phone').value.trim(), 18],
+    ['Adresse', document.getElementById('address').value.trim(), 18],
+    ['E-Mail', document.getElementById('email').value.trim(), 16],
+  ].forEach(([lbl, val, off]) => {
+    checkPage();
+    doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(136,136,136); doc.text(lbl.toUpperCase(), m, y);
+    doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(12,12,12);
+    doc.splitTextToSize(val, cw - off).forEach(vl => { doc.text(vl, m + off, y); y += lh; });
   });
-  y += 2; y = rule(y);
+  y += 2; hRule();
 
-  // 2.
-  y = section('2', 'Gesundheitsangaben', y);
-  y = txt('☑  Ich bestätige, dass ich den Tätowierer über alle relevanten gesundheitlichen Einschränkungen, Erkrankungen, Allergien oder die Einnahme von Medikamenten informiert habe.', m, y, cw, 9);
-  y += 3; y = rule(y);
+  // ── 2. Gesundheitsangaben
+  sectionHead('02', 'Gesundheitsangaben');
+  ynLine('Blutverdünnende Medikamente', yns['q1'], yns['q1'] ? document.getElementById('q1-text').value.trim() || '—' : null);
+  ynLine('Andere Medikamente', yns['q2'], yns['q2'] ? document.getElementById('q2-text').value.trim() || '—' : null);
 
-  // 3.
-  y = section('3', 'Aufklärung', y);
-  y = txt('☑  Ich wurde darüber aufgeklärt, dass:', m, y, cw, 9);
-  ['eine Tätowierung dauerhaft ist',
-   'das endgültige Ergebnis vom Entwurf abweichen kann',
-   'es trotz höchster Hygienestandards zu Komplikationen kommen kann (z. B. Infektionen, allergische Reaktionen)',
-   'die Nachsorge entscheidend für das Ergebnis ist'
-  ].forEach(b => {
-    doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(90,82,72);
-    doc.splitTextToSize('— ' + b, cw - 5).forEach(bl => { doc.text(bl, m+5, y); y += lh; });
-  });
-  y += 2; y = rule(y);
+  // Allergien
+  const allergyChips = getChips('q3-expand');
+  const allergyText  = document.getElementById('q3-text').value.trim();
+  let allergyDetail  = '';
+  if (yns['q3']) {
+    if (allergyChips.length) allergyDetail += allergyChips.join(', ');
+    if (allergyText) allergyDetail += (allergyDetail ? ' | ' : '') + allergyText;
+  }
+  ynLine('Bekannte Allergien', yns['q3'], allergyDetail || null);
 
-  // 4.
-  y = section('4', 'Einwilligung zur Tätowierung', y);
-  y = txt('☑  Ich erkläre mich ausdrücklich mit der Durchführung der Tätowierung einverstanden. Mir ist bewusst, dass es sich hierbei um einen Eingriff in die körperliche Unversehrtheit handelt.', m, y, cw, 9);
-  y += 3; y = rule(y);
+  // Vorerkrankungen
+  const condChips = getChips('q4-expand');
+  const condText  = document.getElementById('q4-text').value.trim();
+  let condDetail  = '';
+  if (yns['q4']) {
+    if (condChips.length) condDetail += condChips.join(', ');
+    if (condText) condDetail += (condDetail ? ' | ' : '') + condText;
+  }
+  ynLine('Erkrankungen / chronische Beschwerden', yns['q4'], condDetail || null);
+  ynLine('Schwangerschaft / Stillen', yns['q5'], null);
+  ynLine('Alkohol / Drogen / betäubende Substanzen heute', yns['q6'], null);
+  y += 1;
+  checkLine('Körperlich fit, ausgeruht und ausreichend gegessen', true);
+  checkLine('Alle Gesundheitsangaben vollständig und wahrheitsgemäß gemacht', true);
+  y += 2; hRule();
 
-  // 5.
-  y = section('5', 'Datenschutz', y);
-  y = txt('☑  Ich habe die Datenschutzerklärung zur Kenntnis genommen und bin damit einverstanden, dass meine personenbezogenen Daten zum Zweck der Terminabwicklung, Dokumentation und Kundenverwaltung gespeichert und verarbeitet werden.', m, y, cw, 9);
-  y += 3; y = rule(y);
+  // ── 3. Aufklärung
+  sectionHead('03', 'Aufklärung');
+  checkLine('Ich wurde umfassend aufgeklärt und habe alle Informationen gelesen und verstanden.', true);
+  y += 2; hRule();
 
-  // 6.
-  y = section('6', 'Nutzung von Fotos & Videos (Optional)', y);
-  const photoLines = [];
-  if (isChecked('check-social')) photoLines.push('☑  Social Media (Instagram, TikTok)');
-  else photoLines.push('☐  Social Media (Instagram, TikTok)');
-  if (isChecked('check-website')) photoLines.push('☑  Website des Studios');
-  else photoLines.push('☐  Website des Studios');
-  if (isChecked('check-werbung')) photoLines.push('☑  Werbezwecke');
-  else photoLines.push('☐  Werbezwecke');
-  photoLines.forEach(pl => { y = txt(pl, m, y, cw, 9); });
-  y = txt('Hinweis: Diese Einwilligung kann jederzeit mit Wirkung für die Zukunft widerrufen werden.', m, y+2, cw, 8, 'italic', [90,82,72]);
-  y += 3; y = rule(y);
+  // ── 4. Einwilligung & AGB
+  sectionHead('04', 'Einwilligung & AGB');
+  checkLine('Ich willige ausdrücklich in die Durchführung der Tätowierung ein und erkenne die AGB vollumfänglich an.', true);
+  y += 2; hRule();
 
-  // Signature
-  if (y > 220) { doc.addPage(); y = 20; }
+  // ── 5. Datenschutz
+  sectionHead('05', 'Datenschutz');
+  checkLine('Ich habe die Datenschutzerklärung gelesen und stimme der Verarbeitung meiner Daten gemäß DSGVO zu.', true);
+  y += 2; hRule();
+
+  // ── 6. Fotos
+  sectionHead('06', 'Fotos & Videos (Optional)');
+  checkLine('Social Media', isChk('chk-social'));
+  checkLine('Website des Studios', isChk('chk-website'));
+  checkLine('Werbezwecke', isChk('chk-werbung'));
+  y += 2; hRule();
+
+  // ── Unterschrift
+  checkPage(50);
   y += 4;
-  doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(26,20,16);
+  doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(12,12,12);
   doc.text('UNTERSCHRIFT', m, y);
-  doc.setFont('helvetica','normal'); doc.setTextColor(90,82,72);
-  doc.text('Datum: ' + dateStr, pw - m, y, { align: 'right' });
+  doc.setFont('helvetica','normal'); doc.setTextColor(136,136,136);
+  doc.text('Datum: ' + dateStr, pw - m, y, { align:'right' });
   y += 6;
-  const sigH = 32;
-  doc.setDrawColor(212,201,184); doc.setLineWidth(0.3);
+  const sigH = 34;
+  doc.setDrawColor(216,216,216); doc.setLineWidth(0.3);
   doc.rect(m, y, cw, sigH);
-  doc.addImage(sigPad.toDataURL('image/png'), 'PNG', m+2, y+1, cw-4, sigH-2);
-  y += sigH + 5;
-  doc.setFontSize(7); doc.setTextColor(180,170,160);
+  doc.addImage(sigPad.toDataURL('image/png'), 'PNG', m + 2, y + 1, cw - 4, sigH - 2);
+  y += sigH + 6;
+  doc.setFontSize(6.5); doc.setTextColor(180,180,180);
   doc.text('Erstellt: ' + dateStr + ' — Dieses Dokument wurde digital ausgefüllt und unterschrieben.', m, y);
 
   const safeName = name.replace(/[^a-z0-9äöüÄÖÜ]/gi, '_');
   doc.save('Einverstaendnis_' + safeName + '_' + today.getFullYear() + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0') + '.pdf');
 }
 
-// ── Submit ────────────────────────────────────────────────
+// ── SUBMIT ────────────────────────────────────────────────
 function submitForm() {
   if (!validate()) {
-    const firstErr = document.querySelector('.error, .error-check, .error-sig');
-    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const first = document.querySelector('.err, .chk-err, .err-sig, .err-border');
+    if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
     return;
   }
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.textContent = 'PDF wird erstellt…';
+  btn.textContent = 'PDF wird erstellt …';
   setTimeout(() => {
     buildPDF();
-    // TODO: sendEmail() — wird später ergänzt
     document.querySelectorAll('.section, #submitWrap').forEach(el => el.style.display = 'none');
-    document.getElementById('successScreen').classList.add('visible');
+    document.getElementById('successScreen').classList.add('show');
   }, 200);
 }
 
-// ── Reset ─────────────────────────────────────────────────
+// ── RESET ─────────────────────────────────────────────────
 function resetForm() {
-  ['name','dob','phone','address','email'].forEach(id => document.getElementById(id).value = '');
-  ['check-health','check-info','check-consent','check-dsgvo','check-social','check-website','check-werbung'].forEach(id => {
-    checks[id] = false;
-    document.getElementById(id).classList.remove('checked','error-check');
+  ['name','dob','phone','address','email','q1-text','q2-text','q3-text','q4-text'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
   });
+  Object.keys(chks).forEach(k => { chks[k] = false; const el = document.getElementById(k); if(el) el.classList.remove('on','chk-err'); });
+  Object.keys(yns).forEach(k => delete yns[k]);
+  ['q1','q2','q3','q4','q5','q6'].forEach(q => {
+    document.getElementById(q+'-yes').className = 'yn-btn';
+    document.getElementById(q+'-no').className  = 'yn-btn';
+    document.getElementById(q+'-expand').classList.remove('open');
+  });
+  document.querySelectorAll('.allergy-chip').forEach(c => c.classList.remove('selected'));
   clearSig();
-  document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('visible'));
-  document.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
-  document.getElementById('sigWrap').classList.remove('error-sig');
-  document.getElementById('successScreen').classList.remove('visible');
-  document.getElementById('submitBtn').disabled = false;
-  document.getElementById('submitBtn').textContent = 'Formular abschicken & PDF erstellen';
+  document.querySelectorAll('.err-msg').forEach(e => e.classList.remove('show'));
+  document.querySelectorAll('.err').forEach(e => e.classList.remove('err'));
+  document.getElementById('sigWrap').classList.remove('err-sig');
+  document.getElementById('successScreen').classList.remove('show');
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  btn.textContent = 'Abschicken & PDF erstellen';
   document.querySelectorAll('.section, #submitWrap').forEach(el => el.style.display = '');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top:0, behavior:'smooth' });
 }
 </script>
 </body>
