@@ -1179,7 +1179,7 @@ async function submitForm() {
         document.querySelectorAll('.section, #submitWrap').forEach(el => el.style.display = 'none');
         document.getElementById('successScreen').classList.add('show');
     } else {
-        alert("Fehler beim Speichern in Brevo: " + JSON.stringify(result.data));
+        alert("Fehler: " + (result.error || JSON.stringify(result.data) || "Unbekannter Fehler"));
         btn.disabled = false;
         btn.textContent = 'Abschicken & PDF erstellen';
     }
