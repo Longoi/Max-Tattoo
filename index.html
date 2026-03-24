@@ -1104,8 +1104,11 @@ function buildPDF() {
   doc.setFontSize(6.5); doc.setTextColor(180,180,180);
   doc.text('Erstellt: ' + dateStr + ' — Dieses Dokument wurde digital ausgefüllt und unterschrieben.', m, y);
 
-  const safeName = name.replace(/[^a-z0-9äöüÄÖÜ]/gi, '_');
-  doc.save('Einverstaendnis_' + safeName + '_' + today.getFullYear() + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0') + '.pdf');
+  // DAS WICHTIGSTE: Anstatt zu speichern (doc.save), exportieren wir die Datei als String an Cloudflare!
+  const pdfDataUri = doc.output('datauristring');
+  const base64String = pdfDataUri.split(',')[1]; 
+  
+  return base64String;
 }
 
 // ── SUBMIT ────────────────────────────────────────────────
