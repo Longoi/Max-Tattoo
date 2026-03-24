@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Einverständniserklärung</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.7/signature_pad.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Jost:wght@300;400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f7f4ef;
+  --ink: #1a1410;
+  --ink-light: #5a5248;
+  --gold: #b8955a;
+  --gold-light: #e8dcc8;
+  --line: #d4c9b8;
+  --surface: #ffffff;
+  --error: #8b2020;
+}
+
+html { font-size: 16px; }
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.header {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 40px 32px 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 80px);
+}
+.header-ornament {
+  font-size: 11px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 300;
+  margin-bottom: 12px;
+}
+.header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 6vw, 42px);
+  font-weight: 300;
+  letter-spacing: 2px;
+  line-height: 1.1;
+}
+.header-sub {
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 10px;
+  font-weight: 300;
+}
+.gold-rule {
+  width: 60px; height: 1px;
+  background: var(--gold);
+  margin: 16px auto 0;
+}
+
+.form-wrapper {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+.section {
+  margin-bottom: 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px 16px;
+  border-bottom: 1px solid var(--line);
+  background: #fdfbf8;
+}
+.section-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+  min-width: 28px;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--ink);
+  flex: 1;
+}
+.badge {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+.badge-required { background: var(--ink); color: var(--bg); }
+.badge-optional { background: var(--gold-light); color: var(--gold); }
+
+.section-body { padding: 22px 24px; }
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.field-grid .full { grid-column: 1 / -1; }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  font-weight: 500;
+}
+.field input, .field textarea {
+  font-family: 'Jost', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 11px 14px;
+  color: var(--ink);
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+.field input:focus, .field textarea:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgba(26,20,16,0.06);
+}
+.field input.error { border-color: var(--error); }
+
+.prose {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--ink-light);
+  font-weight: 300;
+}
+.prose strong { color: var(--ink); font-weight: 500; }
+.prose ul {
+  margin: 10px 0 0 0;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.prose ul li {
+  padding-left: 18px;
+  position: relative;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.prose ul li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+}
+
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.check-row.no-border { border-top: none; }
+
+.custom-check {
+  width: 20px; height: 20px; min-width: 20px;
+  border: 1.5px solid var(--line);
+  border-radius: 2px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 1px;
+}
+.custom-check.checked { background: var(--ink); border-color: var(--ink); }
+.custom-check svg { display: none; }
+.custom-check.checked svg { display: block; }
+.custom-check.error-check { border-color: var(--error); }
+.check-label {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink);
+  font-weight: 300;
+  cursor: pointer;
+}
+.check-label strong { font-weight: 500; }
+
+.sig-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.sig-wrap {
+  border: 1.5px solid var(--line);
+  border-radius: 2px;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+.sig-wrap.error-sig { border-color: var(--error); }
+.sig-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 160px;
+  touch-action: none;
+}
+.sig-hint {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--line);
+  pointer-events: none;
+  font-weight: 300;
+  white-space: nowrap;
+}
+.sig-hint.hidden { display: none; }
+.sig-clear {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0 0;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.date-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--ink-light);
+}
+.date-row strong { color: var(--ink); font-weight: 500; }
+
+.error-msg {
+  font-size: 11px;
+  color: var(--error);
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  display: none;
+}
+.error-msg.visible { display: block; }
+
+.submit-wrap { text-align: center; margin-top: 8px; }
+.btn-submit {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-weight: 500;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  padding: 18px 48px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+  width: 100%;
+  max-width: 340px;
+}
+.btn-submit:hover { background: #2d2620; }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.success-screen {
+  display: none;
+  text-align: center;
+  padding: 60px 32px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+}
+.success-screen.visible { display: block; }
+.success-icon {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+.success-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.success-sub {
+  font-size: 14px;
+  color: var(--ink-light);
+  font-weight: 300;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+.btn-new {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+  background: none;
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  padding: 14px 32px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.btn-new:hover { background: var(--ink); color: var(--bg); }
+
+.form-footer {
+  text-align: center;
+  padding: 0 20px 40px;
+  font-size: 11px;
+  color: var(--line);
+  letter-spacing: 1px;
+}
+
+@media (max-width: 480px) {
+  .field-grid { grid-template-columns: 1fr; }
+  .field-grid .full { grid-column: 1; }
+  .section-body { padding: 18px 16px; }
+  .section-header { padding: 16px; }
+  .form-wrapper { padding: 20px 12px 60px; }
+  .header { padding: 32px 20px 24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-ornament">Studio · Dokument</div>
+  <h1>Einverständniserklärung</h1>
+  <div class="header-sub">Tätowierung</div>
+  <div class="gold-rule"></div>
+</div>
+
+<div class="form-wrapper" id="formWrapper">
+
+  <!-- 1. Persönliche Angaben -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">1</span>
+      <span class="section-title">Persönliche Angaben</span>
+      <span class="badge badge-required">Pflichtfeld</span>
+    </div>
+    <div class="section-body">
+      <div class="field-grid">
+        <div class="field full">
+          <label>Vor- und Nachname</label>
+          <input type="text" id="name" placeholder="Max Mustermann" autocomplete="name">
+          <span class="error-msg" id="err-name">Bitte Namen eingeben</span>
+        </div>
+        <div class="field">
+          <label>Geburtsdatum</label>
+          <input type="date" id="dob">
+          <span class="error-msg" id="err-dob">Bitte Geburtsdatum eingeben</span>
+        </div>
+        <div class="field">
+          <label>Telefonnummer</label>
+          <input type="tel" id="phone" placeholder="+49 123 456789">
+          <span class="error-msg" id="err-phone">Bitte Telefonnummer eingeben</span>
+        </div>
+        <div class="field full">
+          <label>Adresse</label>
+          <input type="text" id="address" placeholder="Musterstraße 1, 12345 Berlin">
+          <span class="error-msg" id="err-address">Bitte Adresse eingeben</span>
+        </div>
+        <div class="field full">
+          <label>E-Mail-Adresse</label>
+          <input type="email" id="email" placeholder="max@beispiel.de">
+          <span class="error-msg" id="err-email">Bitte gültige E-Mail eingeben</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Gesundheitsangaben -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">2</span>
+      <span class="section-title">Gesundheitsangaben</span>
+      <span class="badge badge-required">Pflichtfeld</span>
+    </div>
+    <div class="section-body">
+      <p class="prose">Ich bestätige, dass ich den Tätowierer über alle relevanten gesundheitlichen Einschränkungen, Erkrankungen, Allergien oder die Einnahme von Medikamenten informiert habe.</p>
+      <div class="check-row no-border" style="margin-top:14px;">
+        <div class="custom-check" id="check-health" onclick="toggleCheck('check-health')">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="check-label" onclick="toggleCheck('check-health')">Ich bestätige die obige Erklärung zu meinem Gesundheitszustand.</span>
+      </div>
+      <span class="error-msg" id="err-health">Bitte bestätigen</span>
+    </div>
+  </div>
+
+  <!-- 3. Aufklärung -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">3</span>
+      <span class="section-title">Aufklärung</span>
+      <span class="badge badge-required">Pflichtfeld</span>
+    </div>
+    <div class="section-body">
+      <p class="prose">Ich wurde darüber aufgeklärt, dass:</p>
+      <div class="prose" style="margin-top:8px;">
+        <ul>
+          <li>eine Tätowierung <strong>dauerhaft</strong> ist</li>
+          <li>das endgültige Ergebnis vom Entwurf abweichen kann</li>
+          <li>es trotz höchster Hygienestandards zu Komplikationen kommen kann (z. B. Infektionen, allergische Reaktionen)</li>
+          <li>die <strong>Nachsorge entscheidend</strong> für das Ergebnis ist</li>
+        </ul>
+      </div>
+      <div class="check-row" style="margin-top:8px;">
+        <div class="custom-check" id="check-info" onclick="toggleCheck('check-info')">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="check-label" onclick="toggleCheck('check-info')">Ich habe die obigen Informationen gelesen und verstanden.</span>
+      </div>
+      <span class="error-msg" id="err-info">Bitte bestätigen</span>
+    </div>
+  </div>
+
+  <!-- 4. Einwilligung -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">4</span>
+      <span class="section-title">Einwilligung zur Tätowierung</span>
+      <span class="badge badge-required">Pflichtfeld</span>
+    </div>
+    <div class="section-body">
+      <p class="prose">Ich erkläre mich ausdrücklich mit der Durchführung der Tätowierung einverstanden. Mir ist bewusst, dass es sich hierbei um einen Eingriff in die körperliche Unversehrtheit handelt.</p>
+      <div class="check-row" style="margin-top:8px;">
+        <div class="custom-check" id="check-consent" onclick="toggleCheck('check-consent')">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="check-label" onclick="toggleCheck('check-consent')">Ich willige ausdrücklich in die Durchführung der Tätowierung ein.</span>
+      </div>
+      <span class="error-msg" id="err-consent">Bitte bestätigen</span>
+    </div>
+  </div>
+
+  <!-- 5. Datenschutz -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5</span>
+      <span class="section-title">Datenschutz</span>
+      <span class="badge badge-required">Pflichtfeld</span>
+    </div>
+    <div class="section-body">
+      <p class="prose">Ich habe die Datenschutzerklärung zur Kenntnis genommen und bin damit einverstanden, dass meine personenbezogenen Daten zum Zweck der Terminabwicklung, Dokumentation und Kundenverwaltung gespeichert und verarbeitet werden.</p>
+      <div class="check-row" style="margin-top:8px;">
+        <div class="custom-check" id="check-dsgvo" onclick="toggleCheck('check-dsgvo')">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="check-label" onclick="toggleCheck('check-dsgvo')">Ich habe die <strong>Datenschutzerklärung</strong> gelesen und stimme der Verarbeitung meiner Daten zu.</span>
+      </div>
+      <span class="error-msg" id="err-dsgvo">Bitte bestätigen</span>
+    </div>
+  </div>
+
+  <!-- 6. Fotos & Videos -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">6</span>
+      <span class="section-title">Nutzung von Fotos &amp; Videos</span>
+      <span class="badge badge-optional">Optional</span>
+    </div>
+    <div class="section-body">
+      <p class="prose">Ich willige ein, dass im Rahmen meiner Tätowierung aufgenommene Fotos und/oder Videos meines Tattoos verwendet werden dürfen für:</p>
+      <div class="check-row no-border" style="margin-top:14px;">
+        <div class="custom-check" id="check-social" onclick="toggleCheck('check-social')">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="check-label" onclick="toggleCheck('check-social')">Social Media (z. B. Instagram, TikTok)</span>
+      </div>
+      <div class="check-row">
+        <div class="custom-check" id="check-website" onclick="toggleCheck('check-website')">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="check-label" onclick="toggleCheck('check-website')">Website des Studios</span>
+      </div>
+      <div class="check-row">
+        <div class="custom-check" id="check-werbung" onclick="toggleCheck('check-werbung')">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#f7f4ef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="check-label" onclick="toggleCheck('check-werbung')">Werbezwecke</span>
+      </div>
+      <p class="prose" style="margin-top:16px; font-size:12px; border-top:1px solid var(--line); padding-top:14px;">
+        <strong>Hinweis:</strong> Diese Einwilligung kann jederzeit mit Wirkung für die Zukunft widerrufen werden.
+      </p>
+    </div>
+  </div>
+
+  <!-- Unterschrift -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">✦</span>
+      <span class="section-title">Unterschrift</span>
+      <span class="badge badge-required">Pflichtfeld</span>
+    </div>
+    <div class="section-body">
+      <div class="sig-label">Bitte hier unterschreiben</div>
+      <div class="sig-wrap" id="sigWrap">
+        <canvas id="sigCanvas"></canvas>
+        <div class="sig-hint" id="sigHint">Unterschrift</div>
+      </div>
+      <button class="sig-clear" onclick="clearSig()">Löschen</button>
+      <span class="error-msg" id="err-sig">Bitte unterschreiben</span>
+      <div class="date-row">
+        <span>Datum:</span>
+        <strong id="dateDisplay"></strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-wrap" id="submitWrap">
+    <button class="btn-submit" id="submitBtn" onclick="submitForm()">
+      Formular abschicken &amp; PDF erstellen
+    </button>
+  </div>
+
+  <!-- Success -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">
+      <svg width="24" height="20" viewBox="0 0 24 20" fill="none"><path d="M2 10l7 7L22 2" stroke="#f7f4ef" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="success-title">Vielen Dank</div>
+    <div class="success-sub">Das Dokument wurde als PDF gespeichert.<br>Bitte dem Tätowierer aushändigen oder weiterleiten.</div>
+    <button class="btn-new" onclick="resetForm()">Neues Formular</button>
+  </div>
+
+</div>
+
+<div class="form-footer">Alle Angaben werden vertraulich behandelt · DSGVO-konform</div>
+
+<script>
+// ── Checks ────────────────────────────────────────────────
+const checks = {};
+function toggleCheck(id) {
+  checks[id] = !checks[id];
+  document.getElementById(id).classList.toggle('checked', checks[id]);
+}
+function isChecked(id) { return !!checks[id]; }
+
+// ── Signature Pad ─────────────────────────────────────────
+const canvas = document.getElementById('sigCanvas');
+const sigPad = new SignaturePad(canvas, {
+  penColor: '#1a1410',
+  minWidth: 1.2,
+  maxWidth: 2.8,
+});
+
+function resizeCanvas() {
+  const ratio = Math.max(window.devicePixelRatio || 1, 1);
+  canvas.width = canvas.offsetWidth * ratio;
+  canvas.height = canvas.offsetHeight * ratio;
+  canvas.getContext('2d').scale(ratio, ratio);
+  sigPad.clear();
+}
+
+sigPad.addEventListener('beginStroke', () => {
+  document.getElementById('sigHint').classList.add('hidden');
+});
+
+function clearSig() {
+  sigPad.clear();
+  document.getElementById('sigHint').classList.remove('hidden');
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// ── Date ──────────────────────────────────────────────────
+const today = new Date();
+const dateStr = today.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+document.getElementById('dateDisplay').textContent = dateStr;
+
+// ── Validation ────────────────────────────────────────────
+function showError(id, show) {
+  const el = document.getElementById('err-' + id);
+  if (el) el.classList.toggle('visible', show);
+}
+function markField(id, error) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('error', error);
+}
+function markCheck(id, error) {
+  document.getElementById(id).classList.toggle('error-check', error);
+}
+
+function validate() {
+  let ok = true;
+
+  const name = document.getElementById('name').value.trim();
+  const nameOk = name.length > 1;
+  markField('name', !nameOk); showError('name', !nameOk);
+  if (!nameOk) ok = false;
+
+  const dob = document.getElementById('dob').value;
+  const dobOk = !!dob;
+  markField('dob', !dobOk); showError('dob', !dobOk);
+  if (!dobOk) ok = false;
+
+  const phone = document.getElementById('phone').value.trim();
+  const phoneOk = phone.length > 4;
+  markField('phone', !phoneOk); showError('phone', !phoneOk);
+  if (!phoneOk) ok = false;
+
+  const address = document.getElementById('address').value.trim();
+  const addrOk = address.length > 4;
+  markField('address', !addrOk); showError('address', !addrOk);
+  if (!addrOk) ok = false;
+
+  const email = document.getElementById('email').value.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  markField('email', !emailOk); showError('email', !emailOk);
+  if (!emailOk) ok = false;
+
+  [['check-health','health'],['check-info','info'],['check-consent','consent'],['check-dsgvo','dsgvo']].forEach(([chk, key]) => {
+    const chkOk = isChecked(chk);
+    markCheck(chk, !chkOk); showError(key, !chkOk);
+    if (!chkOk) ok = false;
+  });
+
+  const sigOk = !sigPad.isEmpty();
+  document.getElementById('sigWrap').classList.toggle('error-sig', !sigOk);
+  showError('sig', !sigOk);
+  if (!sigOk) ok = false;
+
+  return ok;
+}
+
+// ── PDF ───────────────────────────────────────────────────
+function buildPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const m = 20;
+  const pw = 210;
+  const cw = pw - m * 2;
+  let y = 20;
+  const lh = 6;
+
+  function txt(text, x, sy, maxW, size, style, color) {
+    doc.setFontSize(size);
+    doc.setFont('helvetica', style || 'normal');
+    doc.setTextColor(...(color || [26,20,16]));
+    const lines = doc.splitTextToSize(text, maxW);
+    lines.forEach(line => {
+      if (sy > 272) { doc.addPage(); sy = 20; }
+      doc.text(line, x, sy);
+      sy += lh;
+    });
+    return sy;
+  }
+
+  function rule(sy) {
+    doc.setDrawColor(212,201,184); doc.setLineWidth(0.3);
+    doc.line(m, sy, pw - m, sy);
+    return sy + 5;
+  }
+
+  function section(num, title, sy) {
+    if (sy > 255) { doc.addPage(); sy = 20; }
+    doc.setFillColor(253,251,248);
+    doc.rect(m, sy - 4, cw, 9, 'F');
+    doc.setFontSize(10); doc.setFont('helvetica','bold');
+    doc.setTextColor(184,149,90); doc.text(num, m + 2, sy + 2);
+    doc.setTextColor(26,20,16); doc.text(title, m + 12, sy + 2);
+    return sy + 11;
+  }
+
+  // Header
+  doc.setFillColor(26,20,16);
+  doc.rect(0, 0, pw, 28, 'F');
+  doc.setFontSize(18); doc.setFont('helvetica','bold'); doc.setTextColor(247,244,239);
+  doc.text('EINVERSTÄNDNISERKLÄRUNG', pw/2, 13, { align: 'center' });
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(184,149,90);
+  doc.text('TÄTOWIERUNG', pw/2, 21, { align: 'center' });
+  y = 38;
+
+  const name = document.getElementById('name').value.trim();
+  const dob = document.getElementById('dob').value;
+  const dobFmt = dob ? new Date(dob + 'T12:00:00').toLocaleDateString('de-DE') : '';
+
+  // 1.
+  y = section('1', 'Persönliche Angaben', y);
+  const fields = [
+    ['Name:', name, 22],
+    ['Geburtsdatum:', dobFmt, 36],
+    ['Telefon:', document.getElementById('phone').value.trim(), 20],
+    ['Adresse:', document.getElementById('address').value.trim(), 22],
+    ['E-Mail:', document.getElementById('email').value.trim(), 18],
+  ];
+  fields.forEach(([label, val, offset]) => {
+    doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(90,82,72);
+    doc.text(label, m, y);
+    doc.setTextColor(26,20,16); doc.setFont('helvetica','bold');
+    const vlines = doc.splitTextToSize(val, cw - offset);
+    vlines.forEach(vl => { doc.text(vl, m + offset, y); y += lh; });
+  });
+  y += 2; y = rule(y);
+
+  // 2.
+  y = section('2', 'Gesundheitsangaben', y);
+  y = txt('☑  Ich bestätige, dass ich den Tätowierer über alle relevanten gesundheitlichen Einschränkungen, Erkrankungen, Allergien oder die Einnahme von Medikamenten informiert habe.', m, y, cw, 9);
+  y += 3; y = rule(y);
+
+  // 3.
+  y = section('3', 'Aufklärung', y);
+  y = txt('☑  Ich wurde darüber aufgeklärt, dass:', m, y, cw, 9);
+  ['eine Tätowierung dauerhaft ist',
+   'das endgültige Ergebnis vom Entwurf abweichen kann',
+   'es trotz höchster Hygienestandards zu Komplikationen kommen kann (z. B. Infektionen, allergische Reaktionen)',
+   'die Nachsorge entscheidend für das Ergebnis ist'
+  ].forEach(b => {
+    doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(90,82,72);
+    doc.splitTextToSize('— ' + b, cw - 5).forEach(bl => { doc.text(bl, m+5, y); y += lh; });
+  });
+  y += 2; y = rule(y);
+
+  // 4.
+  y = section('4', 'Einwilligung zur Tätowierung', y);
+  y = txt('☑  Ich erkläre mich ausdrücklich mit der Durchführung der Tätowierung einverstanden. Mir ist bewusst, dass es sich hierbei um einen Eingriff in die körperliche Unversehrtheit handelt.', m, y, cw, 9);
+  y += 3; y = rule(y);
+
+  // 5.
+  y = section('5', 'Datenschutz', y);
+  y = txt('☑  Ich habe die Datenschutzerklärung zur Kenntnis genommen und bin damit einverstanden, dass meine personenbezogenen Daten zum Zweck der Terminabwicklung, Dokumentation und Kundenverwaltung gespeichert und verarbeitet werden.', m, y, cw, 9);
+  y += 3; y = rule(y);
+
+  // 6.
+  y = section('6', 'Nutzung von Fotos & Videos (Optional)', y);
+  const photoLines = [];
+  if (isChecked('check-social')) photoLines.push('☑  Social Media (Instagram, TikTok)');
+  else photoLines.push('☐  Social Media (Instagram, TikTok)');
+  if (isChecked('check-website')) photoLines.push('☑  Website des Studios');
+  else photoLines.push('☐  Website des Studios');
+  if (isChecked('check-werbung')) photoLines.push('☑  Werbezwecke');
+  else photoLines.push('☐  Werbezwecke');
+  photoLines.forEach(pl => { y = txt(pl, m, y, cw, 9); });
+  y = txt('Hinweis: Diese Einwilligung kann jederzeit mit Wirkung für die Zukunft widerrufen werden.', m, y+2, cw, 8, 'italic', [90,82,72]);
+  y += 3; y = rule(y);
+
+  // Signature
+  if (y > 220) { doc.addPage(); y = 20; }
+  y += 4;
+  doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(26,20,16);
+  doc.text('UNTERSCHRIFT', m, y);
+  doc.setFont('helvetica','normal'); doc.setTextColor(90,82,72);
+  doc.text('Datum: ' + dateStr, pw - m, y, { align: 'right' });
+  y += 6;
+  const sigH = 32;
+  doc.setDrawColor(212,201,184); doc.setLineWidth(0.3);
+  doc.rect(m, y, cw, sigH);
+  doc.addImage(sigPad.toDataURL('image/png'), 'PNG', m+2, y+1, cw-4, sigH-2);
+  y += sigH + 5;
+  doc.setFontSize(7); doc.setTextColor(180,170,160);
+  doc.text('Erstellt: ' + dateStr + ' — Dieses Dokument wurde digital ausgefüllt und unterschrieben.', m, y);
+
+  const safeName = name.replace(/[^a-z0-9äöüÄÖÜ]/gi, '_');
+  doc.save('Einverstaendnis_' + safeName + '_' + today.getFullYear() + String(today.getMonth()+1).padStart(2,'0') + String(today.getDate()).padStart(2,'0') + '.pdf');
+}
+
+// ── Submit ────────────────────────────────────────────────
+function submitForm() {
+  if (!validate()) {
+    const firstErr = document.querySelector('.error, .error-check, .error-sig');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'PDF wird erstellt…';
+  setTimeout(() => {
+    buildPDF();
+    // TODO: sendEmail() — wird später ergänzt
+    document.querySelectorAll('.section, #submitWrap').forEach(el => el.style.display = 'none');
+    document.getElementById('successScreen').classList.add('visible');
+  }, 200);
+}
+
+// ── Reset ─────────────────────────────────────────────────
+function resetForm() {
+  ['name','dob','phone','address','email'].forEach(id => document.getElementById(id).value = '');
+  ['check-health','check-info','check-consent','check-dsgvo','check-social','check-website','check-werbung'].forEach(id => {
+    checks[id] = false;
+    document.getElementById(id).classList.remove('checked','error-check');
+  });
+  clearSig();
+  document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('visible'));
+  document.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
+  document.getElementById('sigWrap').classList.remove('error-sig');
+  document.getElementById('successScreen').classList.remove('visible');
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('submitBtn').textContent = 'Formular abschicken & PDF erstellen';
+  document.querySelectorAll('.section, #submitWrap').forEach(el => el.style.display = '');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
