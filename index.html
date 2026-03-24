@@ -1109,7 +1109,7 @@ function buildPDF() {
 }
 
 // ── SUBMIT ────────────────────────────────────────────────
-async function submitForm() { // Notice the word "async" added here
+async function submitForm() {
   if (!validate()) {
     const first = document.querySelector('.err, .chk-err, .err-sig, .err-border');
     if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
@@ -1118,45 +1118,74 @@ async function submitForm() { // Notice the word "async" added here
   
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.textContent = 'Daten werden gesendet …'; // Changed text to show it's talking to the server
+  btn.textContent = 'PDF wird erstellt und gesendet …';
 
-  // 1. Grab the basic data we want to send to Brevo for our test
-  const nameValue = document.getElementById('name').value.trim();
-  const emailValue = document.getElementById('email').value.trim();
+  // Generate PDF Base64
+  const pdfBase64Data = buildPDF(); 
+  
+  // Split the full name into First and Last name
+  const fullName = document.getElementById('name').value.trim();
+  const nameParts = fullName.split(' ');
+  const firstName = nameParts.shift();
+  const lastName = nameParts.length > 0 ? nameParts.join(' ') : '-';
+
+  // Helper to combine Yes/No with detail text and chips
+  const getMedAnswer = (qKey, textId, chipsId) => {
+    if (yns[qKey] === false) return 'Nein';
+    let detail = document.getElementById(textId) ? document.getElementById(textId).value.trim() : '';
+    let chips = chipsId ? getChips(chipsId).join(', ') : '';
+    let combined = [chips, detail].filter(x => x).join(' | ');
+    return combined ? `Ja - ${combined}` : 'Ja';
+  };
+
+  // Build the payload matching the Cloudflare Worker
+  const payloadData = {
+      email: document.getElementById('email').value.trim(),
+      vorname: firstName,
+      nachname: lastName,
+      phone: document.getElementById('phone').value.trim(),
+      address: document.getElementById('address').value.trim(),
+      pdfBase64: pdfBase64Data,
+      
+      // Medical
+      q1: getMedAnswer('q1', 'q1-text'),
+      q2: getMedAnswer('q2', 'q2-text'),
+      q3: getMedAnswer('q3', 'q3-text', 'q3-expand'),
+      q4: getMedAnswer('q4', 'q4-text', 'q4-expand'),
+      q5: yns['q5'] ? 'Ja' : 'Nein',
+      q6: yns['q6'] ? 'Ja' : 'Nein',
+
+      // Checkboxes
+      chkFit: isChk('chk-fit'),
+      chkHealth: isChk('chk-healthconfirm'),
+      chkInfo: isChk('chk-info'),
+      chkConsent: isChk('chk-consent'),
+      chkDsgvo: isChk('chk-dsgvo'),
+      chkSocial: isChk('chk-social'),
+      chkWebsite: isChk('chk-website'),
+      chkWerbung: isChk('chk-werbung')
+  };
 
   try {
-    // 2. Send the data to your Cloudflare Worker
     const response = await fetch("https://tattoo-form-backend.long200291.workers.dev/", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            name: nameValue,
-            email: emailValue
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payloadData)
     });
 
     const result = await response.json();
 
-    if (result.success) {
-        // 3. IT WORKED! Now build the PDF and show the success screen
-        btn.textContent = 'PDF wird erstellt …';
-        setTimeout(() => {
-            buildPDF();
-            document.querySelectorAll('.section, #submitWrap').forEach(el => el.style.display = 'none');
-            document.getElementById('successScreen').classList.add('show');
-        }, 200);
+    if (result.success && !result.data?.code) {
+        document.querySelectorAll('.section, #submitWrap').forEach(el => el.style.display = 'none');
+        document.getElementById('successScreen').classList.add('show');
     } else {
-        // Brevo rejected it
-        alert("Fehler beim Speichern in Brevo: " + JSON.stringify(result));
+        alert("Fehler beim Speichern in Brevo: " + JSON.stringify(result.data));
         btn.disabled = false;
         btn.textContent = 'Abschicken & PDF erstellen';
     }
 
   } catch (error) {
-    // Cloudflare is down or no internet connection
-    alert("Verbindungsfehler zu Cloudflare: " + error.message);
+    alert("Verbindungsfehler: " + error.message);
     btn.disabled = false;
     btn.textContent = 'Abschicken & PDF erstellen';
   }
