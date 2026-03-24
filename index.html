@@ -1104,20 +1104,57 @@ function buildPDF() {
 }
 
 // ── SUBMIT ────────────────────────────────────────────────
-function submitForm() {
+async function submitForm() { // Notice the word "async" added here
   if (!validate()) {
     const first = document.querySelector('.err, .chk-err, .err-sig, .err-border');
     if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
     return;
   }
+  
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.textContent = 'PDF wird erstellt …';
-  setTimeout(() => {
-    buildPDF();
-    document.querySelectorAll('.section, #submitWrap').forEach(el => el.style.display = 'none');
-    document.getElementById('successScreen').classList.add('show');
-  }, 200);
+  btn.textContent = 'Daten werden gesendet …'; // Changed text to show it's talking to the server
+
+  // 1. Grab the basic data we want to send to Brevo for our test
+  const nameValue = document.getElementById('name').value.trim();
+  const emailValue = document.getElementById('email').value.trim();
+
+  try {
+    // 2. Send the data to your Cloudflare Worker
+    const response = await fetch("https://tattoo-form-backend.long200291.workers.dev/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: nameValue,
+            email: emailValue
+        })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+        // 3. IT WORKED! Now build the PDF and show the success screen
+        btn.textContent = 'PDF wird erstellt …';
+        setTimeout(() => {
+            buildPDF();
+            document.querySelectorAll('.section, #submitWrap').forEach(el => el.style.display = 'none');
+            document.getElementById('successScreen').classList.add('show');
+        }, 200);
+    } else {
+        // Brevo rejected it
+        alert("Fehler beim Speichern in Brevo: " + JSON.stringify(result));
+        btn.disabled = false;
+        btn.textContent = 'Abschicken & PDF erstellen';
+    }
+
+  } catch (error) {
+    // Cloudflare is down or no internet connection
+    alert("Verbindungsfehler zu Cloudflare: " + error.message);
+    btn.disabled = false;
+    btn.textContent = 'Abschicken & PDF erstellen';
+  }
 }
 
 // ── RESET ─────────────────────────────────────────────────
