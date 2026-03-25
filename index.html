@@ -34,50 +34,57 @@ body {
 /* ── HEADER ── */
 .header {
   background: var(--white);
-  color: var(--black);
-  padding: 56px 40px 48px;
-  text-align: center;
-  position: relative;
   border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+}
+.header-inner {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 22px 0;
 }
 .header-logo {
-  max-width: 180px;
+  width: 72px;
   height: auto;
-  margin: 0 auto 30px;
   display: block;
+  flex-shrink: 0;
+  opacity: 0.92;
 }
-.header-studio {
-  font-family: 'Syne', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 6px;
-  text-transform: uppercase;
-  color: var(--mid);
-  margin-bottom: 20px;
+.header-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .header h1 {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(28px, 6vw, 48px);
-  font-weight: 800;
-  letter-spacing: -1px;
-  line-height: 1.1;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--black);
+  line-height: 1.2;
 }
 .header-sub {
   font-family: 'DM Sans', sans-serif;
   font-size: 11px;
   font-weight: 300;
-  letter-spacing: 5px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--mid);
-  margin-top: 14px;
 }
-.header-rule {
-  width: 1px;
-  height: 32px;
-  background: var(--border);
-  margin: 24px auto 0;
+@media (max-width: 540px) {
+  .header { padding: 0 20px; }
+  .header-logo { width: 56px; }
+  .header-divider { height: 32px; }
+  .header h1 { font-size: 11px; letter-spacing: 2px; }
 }
 
 /* ── LAYOUT ── */
@@ -475,7 +482,6 @@ body {
   .section-body { padding: 20px 16px; }
   .section-header { padding: 16px 18px; }
   .form-wrapper { padding: 0 12px 80px; }
-  .header { padding: 40px 20px 36px; }
   .section:first-child { margin-top: 28px; }
 }
 </style>
@@ -483,11 +489,14 @@ body {
 <body>
 
 <div class="header">
-  <img src="IMG_3616.JPG" class="header-logo" alt="Ukiyo Tattoo Atelier Logo">
-  <div class="header-studio">Studio · Dokument</div>
-  <h1>Einverständnis&shy;erklärung</h1>
-  <div class="header-sub">Tätowierung</div>
-  <div class="header-rule"></div>
+  <div class="header-inner">
+    <img src="IMG_3616.JPG" class="header-logo" alt="Ukiyo Tattoo Atelier Logo">
+    <div class="header-divider"></div>
+    <div class="header-text">
+      <h1>Einverständnis&shy;erklärung</h1>
+      <div class="header-sub">Tätowierung</div>
+    </div>
+  </div>
 </div>
 
 <div class="form-wrapper" id="formWrapper">
@@ -767,7 +776,7 @@ body {
       <div class="agb-box">
         <div class="agb-box-title">Datenschutzerklärung (Auszug)</div>
         <div class="agb-scroll">
-          <strong>1. Verantwortlicher</strong><br>Ukiyo Tattoo Atelier, Inhaber: Max Lehn, Tannenstr. 2, 88085 Langenargen, E-Mail: max.lehn13@gmail.com.<br><br>
+          <strong>1. Verantwortlicher</strong><br>Ukiyo Tattoo Atelier, Inhaber: Max Lehn, Tannenstr. 2, 88085 Langenargen, E-Mail: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5538342d7b39303d3b6466153238343c397b363a38">[email&#160;protected]</a>.<br><br>
           <strong>2. Allgemeines zur Datenverarbeitung</strong><br>Wir verarbeiten personenbezogene Daten ausschließlich im Rahmen der gesetzlichen Bestimmungen der Datenschutz-Grundverordnung (DSGVO).<br><br>
           <strong>3. Erhebung und Verarbeitung personenbezogener Daten</strong><br>Wir erheben Name, Adresse, Telefonnummer, E-Mail, Geburtsdatum, Termin- und Vertragsdaten sowie Einwilligungen.<br><br>
           <strong>4. Verarbeitung von Gesundheitsdaten</strong><br>Im Rahmen der Tätowierung verarbeiten wir Gesundheitsdaten (Allergien, Erkrankungen) ausschließlich zur Beurteilung der Durchführbarkeit und Minimierung gesundheitlicher Risiken (Art. 9 Abs. 2 lit. a DSGVO).<br><br>
@@ -867,7 +876,7 @@ body {
       Tannenstr. 2, 88085 Langenargen<br><br>
       <strong>Kontakt</strong><br>
       Telefon: 015902714430<br>
-      E-Mail: max.lehn13@gmail.com<br><br>
+      E-Mail: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="066b677e286a636e68373546616b676f6a2865696b">[email&#160;protected]</a><br><br>
       <strong>Haftung für Inhalte</strong><br>
       Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.<br><br>
       <strong>Online-Streitbeilegung (OS-Plattform)</strong><br>
@@ -877,7 +886,7 @@ body {
   </details>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── STATE ──────────────────────────────────────────────────
 const chks = {};
 const yns  = {};  // true=ja, false=nein
@@ -1257,13 +1266,7 @@ function resetForm() {
   document.querySelectorAll('.err-msg').forEach(e => e.classList.remove('show'));
   document.querySelectorAll('.err').forEach(e => e.classList.remove('err'));
   document.getElementById('sigWrap').classList.remove('err-sig');
-  document.getElementById('successScreen').classList.remove('show');
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = false;
-  btn.textContent = 'Abschicken & PDF erstellen';
   document.querySelectorAll('.section, #submitWrap').forEach(el => el.style.display = '');
-  window.scrollTo({ top:0, behavior:'smooth' });
+  document.getElementById('successScreen').classList.remove('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-</script>
-</body>
-</html>
