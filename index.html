@@ -946,8 +946,8 @@ function validate() {
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value.trim());
   fieldErr('email', !emailOk); showErr('email', !emailOk); if (!emailOk) ok = false;
 
-  // Medical yes/no questions
-  ['q1','q2','q3','q4','q5','q6'].forEach(q => {
+  // Medical yes/no questions (q4 removed)
+  ['q1','q2','q3','q5','q6'].forEach(q => {
     const answered = hasYN(q);
     showErr(q, !answered);
     if (!answered) {
@@ -1096,15 +1096,7 @@ function buildPDF() {
   }
   ynLine('Bekannte Allergien', yns['q3'], allergyDetail || null);
 
-  // Vorerkrankungen
-  const condChips = getChips('q4-expand');
-  const condText  = document.getElementById('q4-text').value.trim();
-  let condDetail  = '';
-  if (yns['q4']) {
-    if (condChips.length) condDetail += condChips.join(', ');
-    if (condText) condDetail += (condDetail ? ' | ' : '') + condText;
-  }
-  ynLine('Erkrankungen / chronische Beschwerden', yns['q4'], condDetail || null);
+  // Vorerkrankungen (q4) has been removed here completely
   ynLine('Schwangerschaft / Stillen', yns['q5'], null);
   ynLine('Alkohol / Drogen / betäubende Substanzen heute', yns['q6'], null);
   y += 1;
@@ -1186,7 +1178,7 @@ async function submitForm() {
     return combined ? `Ja - ${combined}` : 'Ja';
   };
 
-  // Build the payload matching the Cloudflare Worker
+  // Build the payload matching the Cloudflare Worker (q4 removed)
   const payloadData = {
       email: document.getElementById('email').value.trim(),
       vorname: firstName,
@@ -1199,7 +1191,6 @@ async function submitForm() {
       q1: getMedAnswer('q1', 'q1-text'),
       q2: getMedAnswer('q2', 'q2-text'),
       q3: getMedAnswer('q3', 'q3-text', 'q3-expand'),
-      q4: getMedAnswer('q4', 'q4-text', 'q4-expand'),
       q5: yns['q5'] ? 'Ja' : 'Nein',
       q6: yns['q6'] ? 'Ja' : 'Nein',
 
@@ -1241,13 +1232,16 @@ async function submitForm() {
 
 // ── RESET ─────────────────────────────────────────────────
 function resetForm() {
-  ['name','dob','phone','address','email','q1-text','q2-text','q3-text','q4-text'].forEach(id => {
+  // q4-text removed from reset loop
+  ['name','dob','phone','address','email','q1-text','q2-text','q3-text'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   Object.keys(chks).forEach(k => { chks[k] = false; const el = document.getElementById(k); if(el) el.classList.remove('on','chk-err'); });
   Object.keys(yns).forEach(k => delete yns[k]);
-  ['q1','q2','q3','q4','q5','q6'].forEach(q => {
+  
+  // q4 removed from reset loop
+  ['q1','q2','q3','q5','q6'].forEach(q => {
     document.getElementById(q+'-yes').className = 'yn-btn';
     document.getElementById(q+'-no').className  = 'yn-btn';
     document.getElementById(q+'-expand').classList.remove('open');
