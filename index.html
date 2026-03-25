@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Einverständniserklärung — Tätowierung</title>
+<title>Einverständniserklärung — Ukiyo Tattoo Atelier</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.7/signature_pad.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,11 +13,11 @@
 
 :root {
   --black:   #0c0c0c;
-  --white:   #fafafa;
-  --off:     #f3f3f3;
-  --border:  #d8d8d8;
+  --white:   #ffffff;
+  --off:     #f9f9f9;
+  --border:  #e0e0e0;
   --mid:     #888888;
-  --light:   #ececec;
+  --light:   #f0f0f0;
   --error:   #c0392b;
 }
 
@@ -25,7 +25,7 @@ html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background: var(--white);
+  background: var(--off);
   color: var(--black);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -33,12 +33,18 @@ body {
 
 /* ── HEADER ── */
 .header {
-  background: var(--black);
-  color: var(--white);
+  background: var(--white);
+  color: var(--black);
   padding: 56px 40px 48px;
   text-align: center;
   position: relative;
-  border-bottom: 1px solid #222;
+  border-bottom: 1px solid var(--border);
+}
+.header-logo {
+  max-width: 180px;
+  height: auto;
+  margin: 0 auto 30px;
+  display: block;
 }
 .header-studio {
   font-family: 'Syne', sans-serif;
@@ -46,17 +52,17 @@ body {
   font-weight: 700;
   letter-spacing: 6px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: var(--mid);
   margin-bottom: 20px;
 }
 .header h1 {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(32px, 7vw, 58px);
+  font-size: clamp(28px, 6vw, 48px);
   font-weight: 800;
   letter-spacing: -1px;
-  line-height: 1;
+  line-height: 1.1;
   text-transform: uppercase;
-  color: var(--white);
+  color: var(--black);
 }
 .header-sub {
   font-family: 'DM Sans', sans-serif;
@@ -64,14 +70,14 @@ body {
   font-weight: 300;
   letter-spacing: 5px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
+  color: var(--mid);
   margin-top: 14px;
 }
 .header-rule {
   width: 1px;
   height: 32px;
-  background: rgba(255,255,255,0.2);
-  margin: 20px auto 0;
+  background: var(--border);
+  margin: 24px auto 0;
 }
 
 /* ── LAYOUT ── */
@@ -159,7 +165,7 @@ body {
   transition: border-color 0.15s, background 0.15s;
   -webkit-appearance: none;
 }
-.field input:focus, .field textarea:focus { border-color: var(--black); background: var(--white); }
+.field input:focus, .field textarea:focus { border-color: var(--black); background: var(--off); }
 .field input.err, .field textarea.err { border-color: var(--error); }
 .field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
 
@@ -233,11 +239,7 @@ body {
 }
 
 /* ── ALLERGY CHIPS ── */
-.allergy-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+.allergy-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .allergy-chip {
   font-family: 'DM Sans', sans-serif;
   font-size: 12px;
@@ -321,9 +323,7 @@ body {
   display: flex; align-items: center; justify-content: space-between;
   margin-top: 10px;
 }
-.sig-date {
-  font-size: 12px; color: var(--mid); font-weight: 300;
-}
+.sig-date { font-size: 12px; color: var(--mid); font-weight: 300; }
 .sig-date strong { color: var(--black); font-weight: 500; }
 .btn-clear {
   font-family: 'Syne', sans-serif;
@@ -357,7 +357,7 @@ body {
   font-weight: 700; color: var(--mid); margin-bottom: 10px;
 }
 .agb-scroll {
-  max-height: 130px;
+  max-height: 160px;
   overflow-y: auto;
   font-size: 12px;
   line-height: 1.75;
@@ -365,6 +365,7 @@ body {
   font-weight: 300;
   padding-right: 8px;
 }
+.agb-scroll strong { color: var(--black); font-weight: 600; }
 .agb-scroll::-webkit-scrollbar { width: 3px; }
 .agb-scroll::-webkit-scrollbar-track { background: var(--light); }
 .agb-scroll::-webkit-scrollbar-thumb { background: var(--border); }
@@ -417,15 +418,44 @@ body {
 }
 .btn-new:hover { background: var(--black); color: var(--white); }
 
-/* ── FOOTER ── */
+/* ── FOOTER & IMPRESSUM ── */
 .footer {
   text-align: center;
   padding: 0 20px 40px;
   font-size: 10px;
   font-weight: 300;
   letter-spacing: 2px;
-  color: var(--border);
+  color: var(--mid);
   text-transform: uppercase;
+}
+.impressum-wrap {
+  margin-top: 24px;
+  font-family: 'DM Sans', sans-serif;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.impressum-wrap summary {
+  font-family: 'Syne', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--mid);
+  cursor: pointer;
+  outline: none;
+}
+.impressum-wrap summary:hover { color: var(--black); }
+.impressum-content {
+  text-align: left;
+  max-width: 500px;
+  margin: 16px auto 0;
+  padding: 16px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: #555;
+  border-radius: 1px;
 }
 
 /* ── NOTE ── */
@@ -452,8 +482,8 @@ body {
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
+  <img src="IMG_3616.JPG" class="header-logo" alt="Ukiyo Tattoo Atelier Logo">
   <div class="header-studio">Studio · Dokument</div>
   <h1>Einverständnis&shy;erklärung</h1>
   <div class="header-sub">Tätowierung</div>
@@ -462,7 +492,6 @@ body {
 
 <div class="form-wrapper" id="formWrapper">
 
-  <!-- ① PERSÖNLICHE ANGABEN -->
   <div class="section" id="sec-personal">
     <div class="section-header">
       <span class="section-index">01</span>
@@ -488,7 +517,7 @@ body {
         </div>
         <div class="field full">
           <label>Adresse</label>
-          <input type="text" id="address" placeholder="Musterstraße 1, 12345 Stuttgart">
+          <input type="text" id="address" placeholder="Tannenstr. 2, 88085 Langenargen">
           <span class="err-msg" id="err-address">Bitte Adresse eingeben</span>
         </div>
         <div class="field full">
@@ -500,7 +529,6 @@ body {
     </div>
   </div>
 
-  <!-- ② GESUNDHEITSANGABEN -->
   <div class="section" id="sec-health">
     <div class="section-header">
       <span class="section-index">02</span>
@@ -513,7 +541,6 @@ body {
 
       <div class="divider"></div>
 
-      <!-- Q1: Blutverdünner -->
       <div class="med-question">
         <div class="med-q-label"><strong>Nimmst du blutverdünnende Medikamente?</strong><br><span style="font-size:12px;color:var(--mid);font-weight:300;">z. B. ASS / Aspirin, Marcumar, Xarelto, Heparin</span></div>
         <div class="yn-group">
@@ -530,7 +557,6 @@ body {
         </div>
       </div>
 
-      <!-- Q2: Andere Medikamente -->
       <div class="med-question">
         <div class="med-q-label"><strong>Nimmst du regelmäßig andere Medikamente ein?</strong><br><span style="font-size:12px;color:var(--mid);font-weight:300;">Verschreibungspflichtig oder freiverkäuflich</span></div>
         <div class="yn-group">
@@ -546,7 +572,6 @@ body {
         </div>
       </div>
 
-      <!-- Q3: Allergien -->
       <div class="med-question">
         <div class="med-q-label"><strong>Hast du bekannte Allergien?</strong><br><span style="font-size:12px;color:var(--mid);font-weight:300;">Auf Substanzen, Materialien, Medikamente oder Lebensmittel</span></div>
         <div class="yn-group">
@@ -574,7 +599,6 @@ body {
         </div>
       </div>
 
-      <!-- Q4: Vorerkrankungen -->
       <div class="med-question">
         <div class="med-q-label"><strong>Leidest du unter Erkrankungen oder chronischen Beschwerden?</strong></div>
         <div class="yn-group">
@@ -604,7 +628,6 @@ body {
         </div>
       </div>
 
-      <!-- Q5: Schwanger -->
       <div class="med-question">
         <div class="med-q-label"><strong>Bist du schwanger oder stillst du aktuell?</strong></div>
         <div class="yn-group">
@@ -617,7 +640,6 @@ body {
         </div>
       </div>
 
-      <!-- Q6: Alkohol / Drogen -->
       <div class="med-question">
         <div class="med-q-label"><strong>Hast du heute Alkohol, Drogen oder betäubende Substanzen konsumiert?</strong><br><span style="font-size:12px;color:var(--mid);font-weight:300;">Einschließlich Cannabis</span></div>
         <div class="yn-group">
@@ -632,7 +654,6 @@ body {
 
       <div class="divider"></div>
 
-      <!-- Zustand-Bestätigungen -->
       <div class="check-row no-border">
         <div class="chk-box" id="chk-fit" onclick="toggleChk('chk-fit')">
           <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5l3 3L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -657,7 +678,6 @@ body {
     </div>
   </div>
 
-  <!-- ③ AUFKLÄRUNG -->
   <div class="section">
     <div class="section-header">
       <span class="section-index">03</span>
@@ -698,7 +718,6 @@ body {
     </div>
   </div>
 
-  <!-- ④ EINWILLIGUNG + AGB -->
   <div class="section">
     <div class="section-header">
       <span class="section-index">04</span>
@@ -708,24 +727,21 @@ body {
     <div class="section-body">
       <p class="prose" style="margin-bottom:18px;">Ich erkläre mich ausdrücklich mit der Durchführung der Tätowierung einverstanden. Mir ist bewusst, dass es sich hierbei um einen Eingriff in die körperliche Unversehrtheit handelt.</p>
 
-      <!-- AGB Scrollbox -->
       <div class="agb-box">
-        <div class="agb-box-title">Allgemeine Geschäftsbedingungen (AGB)</div>
+        <div class="agb-box-title">Allgemeine Geschäftsbedingungen (AGB) 2026</div>
         <div class="agb-scroll">
-          <strong>§ 1 Geltungsbereich</strong><br>
-          Diese AGB gelten für alle Leistungen des Studios gegenüber Kunden. Mit der Beauftragung erkennt der Kunde diese Bedingungen an.<br><br>
-          <strong>§ 2 Terminvereinbarung &amp; Anzahlung</strong><br>
-          Termine sind verbindlich. Eine Anzahlung ist zur Bestätigung des Termins fällig und wird auf den Gesamtpreis angerechnet. Bei Nichterscheinen oder Absage weniger als 48 Stunden vor dem Termin verfällt die Anzahlung.<br><br>
-          <strong>§ 3 Preise &amp; Zahlung</strong><br>
-          Alle Preise verstehen sich als Endpreise. Die Zahlung erfolgt nach Abschluss der Tätowierung in bar oder auf Wunsch per Karte. Designs und aufgewandte Entwurfszeit werden separat berechnet, sofern nicht anders vereinbart.<br><br>
-          <strong>§ 4 Nachbesserungen</strong><br>
-          Eventuelle Korrekturen (Touch-ups) werden innerhalb von 3 Monaten nach Heilungsabschluss kostenlos durchgeführt, sofern die Pflegehinweise befolgt wurden. Schäden durch mangelhafte Nachsorge sind ausgeschlossen.<br><br>
-          <strong>§ 5 Haftung</strong><br>
-          Das Studio haftet nicht für Komplikationen, die auf eine unvollständige oder falsche Gesundheitsauskunft des Kunden zurückzuführen sind. Für atypische Heilungsverläufe, die durch individuelle Hautmerkmale oder Vorerkrankungen bedingt sind, übernimmt das Studio keine Haftung.<br><br>
-          <strong>§ 6 Hausrecht &amp; Mindestalter</strong><br>
-          Das Studio behält sich das Recht vor, Kunden abzulehnen. Das Mindestalter für Tätowierungen beträgt 18 Jahre. Ein gültiger Lichtbildausweis kann verlangt werden.<br><br>
-          <strong>§ 7 Urheberrecht</strong><br>
-          Alle vom Studio angefertigten Entwürfe unterliegen dem Urheberrechtsschutz. Eine Weitergabe oder Nutzung durch Dritte ist ohne schriftliche Zustimmung untersagt.
+          <strong>1. Allgemeines</strong><br>Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Dienstleistungen des Ukiyo Tattoo Atelier, Inhaber Max Lehn. Mit der Terminvereinbarung und/oder Beauftragung eines Tattoos erkennt der Kunde diese AGB an.<br><br>
+          <strong>2. Mindestalter</strong><br>Personen unter 18 Jahren werden ausschließlich unter folgenden Voraussetzungen tätowiert: Schriftliche Einwilligung eines Erziehungsberechtigten, Vorlage gültiger Ausweisdokumente (Kunde + Erziehungsberechtigter), Persönliche Anwesenheit des Erziehungsberechtigten beim Beratungsgespräch. Personen unter 16 Jahren werden grundsätzlich nicht tätowiert.<br><br>
+          <strong>3. Ausschluss von Leistungen</strong><br>Eine Tätowierung wird nicht durchgeführt bei: Alkohol- oder Drogeneinfluss, Schwangerschaft oder Stillzeit, bekannten schwerwiegenden gesundheitlichen Risiken (z. B. Blutgerinnungsstörungen), akuten Infektionen oder Erkrankungen. Das Studio behält sich vor, eine Behandlung aus gesundheitlichen oder sonstigen Gründen abzulehnen.<br><br>
+          <strong>4. Gesundheitsangaben</strong><br>Der Kunde ist verpflichtet, vollständige und wahrheitsgemäße Angaben zu seinem Gesundheitszustand zu machen, insbesondere zu Allergien, Erkrankungen, Medikamenteneinnahme und Schwangerschaft/Stillzeit. Falsche Angaben erfolgen auf eigene Verantwortung.<br><br>
+          <strong>5. Digitale Einverständniserklärung</strong><br>Vor Durchführung der Tätowierung ist eine digitale Einverständniserklärung auszufüllen. Diese ersetzt die handschriftliche Unterschrift.<br><br>
+          <strong>6. Entwürfe und Urheberrecht</strong><br>Individuell erstellte Tattoo-Designs bleiben geistiges Eigentum des Studios. Eine Weitergabe oder Nutzung ohne ausdrückliche Zustimmung ist nicht gestattet.<br><br>
+          <strong>7. Terminvereinbarung und Anzahlung</strong><br>Ein Termin gilt als verbindlich, sobald eine Anzahlung geleistet wurde. Die Anzahlung wird mit dem Endpreis verrechnet.<br><br>
+          <strong>8. Stornierung und Terminverschiebung</strong><br>Terminabsagen oder -verschiebungen müssen mindestens 48 Stunden vor dem Termin erfolgen. Bei kurzfristiger Absage oder Nichterscheinen wird die Anzahlung einbehalten.<br><br>
+          <strong>9. Preise und Zahlung</strong><br>Die Bezahlung erfolgt unmittelbar nach jeder Sitzung in bar oder per Kartenzahlung. Alle Preise verstehen sich inklusive gesetzlicher Mehrwertsteuer.<br><br>
+          <strong>10. Nachstechen und Touch-Ups</strong><br>Korrekturen (Nachstechen) sind innerhalb von 6 Monaten möglich, sofern sie auf Fehler des Tätowierers zurückzuführen sind. Nachstechen ist kostenpflichtig bei mangelhafter Nachsorge oder äußeren Einflüssen.<br><br>
+          <strong>11. Hygiene und Nachsorge</strong><br>Der Kunde erhält eine ausführliche Nachsorgeanleitung und ist verpflichtet, diese einzuhalten.<br><br>
+          <strong>14. Haftung</strong><br>Für Komplikationen durch falsche Nachsorge, unvollständige Gesundheitsangaben oder individuelle Hautreaktionen wird keine Haftung übernommen, soweit gesetzlich zulässig.
         </div>
       </div>
 
@@ -739,7 +755,6 @@ body {
     </div>
   </div>
 
-  <!-- ⑤ DATENSCHUTZ -->
   <div class="section">
     <div class="section-header">
       <span class="section-index">05</span>
@@ -748,6 +763,20 @@ body {
     </div>
     <div class="section-body">
       <p class="prose" style="margin-bottom:14px;">Ich habe die Datenschutzerklärung zur Kenntnis genommen und bin damit einverstanden, dass meine personenbezogenen Daten zum Zweck der Terminabwicklung, Dokumentation und Kundenverwaltung gespeichert und verarbeitet werden. Eine Weitergabe an Dritte erfolgt nicht.</p>
+      
+      <div class="agb-box">
+        <div class="agb-box-title">Datenschutzerklärung (Auszug)</div>
+        <div class="agb-scroll">
+          <strong>1. Verantwortlicher</strong><br>Ukiyo Tattoo Atelier, Inhaber: Max Lehn, Tannenstr. 2, 88085 Langenargen, E-Mail: max.lehn13@gmail.com.<br><br>
+          <strong>2. Allgemeines zur Datenverarbeitung</strong><br>Wir verarbeiten personenbezogene Daten ausschließlich im Rahmen der gesetzlichen Bestimmungen der Datenschutz-Grundverordnung (DSGVO).<br><br>
+          <strong>3. Erhebung und Verarbeitung personenbezogener Daten</strong><br>Wir erheben Name, Adresse, Telefonnummer, E-Mail, Geburtsdatum, Termin- und Vertragsdaten sowie Einwilligungen.<br><br>
+          <strong>4. Verarbeitung von Gesundheitsdaten</strong><br>Im Rahmen der Tätowierung verarbeiten wir Gesundheitsdaten (Allergien, Erkrankungen) ausschließlich zur Beurteilung der Durchführbarkeit und Minimierung gesundheitlicher Risiken (Art. 9 Abs. 2 lit. a DSGVO).<br><br>
+          <strong>9. Speichersysteme und Drittanbieter</strong><br>Zur Verarbeitung nutzen wir Systeme wie Brevo (CRM & Marketing), Cloudflare (Hosting) und ggf. TIMIFY (Terminverwaltung). Mit allen Dienstleistern bestehen Auftragsverarbeitungsverträge.<br><br>
+          <strong>10. Speicherung und Löschung</strong><br>Ihre Daten werden nur so lange gespeichert, wie es für die jeweiligen Zwecke erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen.<br><br>
+          <strong>12. Ihre Rechte</strong><br>Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit und den Widerruf erteilter Einwilligungen.
+        </div>
+      </div>
+
       <div class="check-row no-border">
         <div class="chk-box" id="chk-dsgvo" onclick="toggleChk('chk-dsgvo')">
           <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5l3 3L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -758,7 +787,6 @@ body {
     </div>
   </div>
 
-  <!-- ⑥ FOTOS & VIDEOS (OPTIONAL) -->
   <div class="section">
     <div class="section-header">
       <span class="section-index">06</span>
@@ -789,7 +817,6 @@ body {
     </div>
   </div>
 
-  <!-- UNTERSCHRIFT -->
   <div class="section">
     <div class="section-header">
       <span class="section-index">✦</span>
@@ -810,14 +837,12 @@ body {
     </div>
   </div>
 
-  <!-- SUBMIT -->
   <div class="submit-wrap" id="submitWrap">
     <button class="btn-submit" id="submitBtn" onclick="submitForm()">
       Abschicken &amp; PDF erstellen
     </button>
   </div>
 
-  <!-- SUCCESS -->
   <div class="success-screen" id="successScreen">
     <div class="success-check">
       <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M2 9l6 6L20 2" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -829,7 +854,28 @@ body {
 
 </div>
 
-<div class="footer">Alle Angaben werden vertraulich behandelt · DSGVO-konform</div>
+<div class="footer">
+  <div>Alle Angaben werden vertraulich behandelt · DSGVO-konform</div>
+  
+  <details class="impressum-wrap">
+    <summary>Impressum einblenden</summary>
+    <div class="impressum-content">
+      <strong>Impressum</strong><br><br>
+      <strong>Ukiyo Tattoo Atelier</strong><br>
+      Angaben gemäß § 5 TMG<br>
+      Inhaber: Max Lehn<br>
+      Tannenstr. 2, 88085 Langenargen<br><br>
+      <strong>Kontakt</strong><br>
+      Telefon: 015902714430<br>
+      E-Mail: max.lehn13@gmail.com<br><br>
+      <strong>Haftung für Inhalte</strong><br>
+      Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.<br><br>
+      <strong>Online-Streitbeilegung (OS-Plattform)</strong><br>
+      Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener" style="color:var(--mid);">https://ec.europa.eu/consumers/odr/</a><br>
+      Wir sind nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+    </div>
+  </details>
+</div>
 
 <script>
 // ── STATE ──────────────────────────────────────────────────
@@ -870,7 +916,7 @@ function getChips(containerId) {
 const canvas = document.getElementById('sigCanvas');
 const sigPad = new SignaturePad(canvas, { 
     penColor: '#0c0c0c', 
-    backgroundColor: 'rgb(243, 243, 243)', // Matches your --off CSS color
+    backgroundColor: 'rgb(249, 249, 249)', // Matches your --off CSS color
     minWidth: 1.2, 
     maxWidth: 2.8 
 });
@@ -1104,7 +1150,6 @@ function buildPDF() {
   doc.setFontSize(6.5); doc.setTextColor(180,180,180);
   doc.text('Erstellt: ' + dateStr + ' — Dieses Dokument wurde digital ausgefüllt und unterschrieben.', m, y);
 
-  // DAS WICHTIGSTE: Anstatt zu speichern (doc.save), exportieren wir die Datei als String an Cloudflare!
   const pdfDataUri = doc.output('datauristring');
   const base64String = pdfDataUri.split(',')[1]; 
   
