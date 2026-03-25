@@ -609,35 +609,6 @@ body {
       </div>
 
       <div class="med-question">
-        <div class="med-q-label"><strong>Leidest du unter Erkrankungen oder chronischen Beschwerden?</strong></div>
-        <div class="yn-group">
-          <button class="yn-btn" id="q4-yes" onclick="setYN('q4',true)">Ja</button>
-          <button class="yn-btn" id="q4-no"  onclick="setYN('q4',false)">Nein</button>
-        </div>
-        <span class="err-msg" id="err-q4">Bitte auswählen</span>
-        <div class="med-expand" id="q4-expand">
-          <div>
-            <div class="chip-label">Zutreffendes wählen</div>
-            <div class="allergy-grid">
-              <span class="allergy-chip" data-val="Diabetes" onclick="toggleChip(this)">Diabetes</span>
-              <span class="allergy-chip" data-val="Bluthochdruck" onclick="toggleChip(this)">Bluthochdruck</span>
-              <span class="allergy-chip" data-val="Herzerkrankung" onclick="toggleChip(this)">Herzerkrankung</span>
-              <span class="allergy-chip" data-val="Blutgerinnungsstörung" onclick="toggleChip(this)">Blutgerinnungsstörung</span>
-              <span class="allergy-chip" data-val="Hauterkrankung" onclick="toggleChip(this)">Hauterkrankung / Psoriasis</span>
-              <span class="allergy-chip" data-val="Epilepsie" onclick="toggleChip(this)">Epilepsie</span>
-              <span class="allergy-chip" data-val="HIV/Hepatitis" onclick="toggleChip(this)">HIV / Hepatitis</span>
-              <span class="allergy-chip" data-val="Immunschwäche" onclick="toggleChip(this)">Immunschwäche</span>
-              <span class="allergy-chip" data-val="Sonstige" onclick="toggleChip(this)">Sonstiges</span>
-            </div>
-          </div>
-          <div class="field">
-            <label>Details</label>
-            <textarea id="q4-text" placeholder="Weitere Informationen zu deinen Erkrankungen…" rows="2"></textarea>
-          </div>
-        </div>
-      </div>
-
-      <div class="med-question">
         <div class="med-q-label"><strong>Bist du schwanger oder stillst du aktuell?</strong></div>
         <div class="yn-group">
           <button class="yn-btn" id="q5-yes" onclick="setYN('q5',true)">Ja</button>
@@ -776,7 +747,7 @@ body {
       <div class="agb-box">
         <div class="agb-box-title">Datenschutzerklärung (Auszug)</div>
         <div class="agb-scroll">
-          <strong>1. Verantwortlicher</strong><br>Ukiyo Tattoo Atelier, Inhaber: Max Lehn, Tannenstr. 2, 88085 Langenargen, E-Mail: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5538342d7b39303d3b6466153238343c397b363a38">[email&#160;protected]</a>.<br><br>
+          <strong>1. Verantwortlicher</strong><br>Ukiyo Tattoo Atelier, Inhaber: Max Lehn, Tannenstr. 2, 88085 Langenargen, E-Mail: max.lehn13@gmail.com.<br><br>
           <strong>2. Allgemeines zur Datenverarbeitung</strong><br>Wir verarbeiten personenbezogene Daten ausschließlich im Rahmen der gesetzlichen Bestimmungen der Datenschutz-Grundverordnung (DSGVO).<br><br>
           <strong>3. Erhebung und Verarbeitung personenbezogener Daten</strong><br>Wir erheben Name, Adresse, Telefonnummer, E-Mail, Geburtsdatum, Termin- und Vertragsdaten sowie Einwilligungen.<br><br>
           <strong>4. Verarbeitung von Gesundheitsdaten</strong><br>Im Rahmen der Tätowierung verarbeiten wir Gesundheitsdaten (Allergien, Erkrankungen) ausschließlich zur Beurteilung der Durchführbarkeit und Minimierung gesundheitlicher Risiken (Art. 9 Abs. 2 lit. a DSGVO).<br><br>
@@ -876,7 +847,7 @@ body {
       Tannenstr. 2, 88085 Langenargen<br><br>
       <strong>Kontakt</strong><br>
       Telefon: 015902714430<br>
-      E-Mail: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="066b677e286a636e68373546616b676f6a2865696b">[email&#160;protected]</a><br><br>
+      E-Mail: max.lehn13@gmail.com<br><br>
       <strong>Haftung für Inhalte</strong><br>
       Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.<br><br>
       <strong>Online-Streitbeilegung (OS-Plattform)</strong><br>
@@ -886,7 +857,7 @@ body {
   </details>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ── STATE ──────────────────────────────────────────────────
 const chks = {};
 const yns  = {};  // true=ja, false=nein
@@ -1037,12 +1008,26 @@ function buildPDF() {
     doc.setTextColor(12,12,12); doc.text(title.toUpperCase(), m + 14, y + 1.5);
     y += 10;
   }
+  
+  // Custom drawn checkboxes fix the ampersand issue in PDF output!
   function checkLine(label, checked) {
     checkPage();
+    // 1. Draw the box
+    doc.setDrawColor(12, 12, 12);
+    doc.setLineWidth(0.3);
+    doc.rect(m, y - 3.2, 3.5, 3.5);
+    
+    // 2. Draw the checkmark if checked
+    if (checked) {
+      doc.setLineWidth(0.4);
+      doc.line(m + 0.7, y - 1.8, m + 1.5, y - 0.5); // Short part of check
+      doc.line(m + 1.5, y - 0.5, m + 2.8, y - 2.8); // Long part of check
+    }
+
     doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(12,12,12);
-    doc.text(checked ? '☑' : '☐', m, y);
     doc.splitTextToSize(label, cw - 8).forEach(l => { doc.text(l, m + 6, y); y += lh; });
   }
+
   function ynLine(label, val, detail) {
     checkPage();
     doc.setFontSize(8.5); doc.setFont('helvetica','bold'); doc.setTextColor(12,12,12);
@@ -1072,7 +1057,13 @@ function buildPDF() {
 
   const name     = document.getElementById('name').value.trim();
   const dob      = document.getElementById('dob').value;
-  const dobFmt   = dob ? new Date(dob + 'T12:00:00').toLocaleDateString('de-DE') : '';
+  
+  // Fix for DD.MM.YYYY issue
+  let dobFmt = '';
+  if (dob) {
+    const [yyyy, mm, dd] = dob.split('-');
+    dobFmt = `${dd}.${mm}.${yyyy}`;
+  }
 
   // ── 1. Persönliche Angaben
   sectionHead('01', 'Persönliche Angaben');
@@ -1270,3 +1261,6 @@ function resetForm() {
   document.getElementById('successScreen').classList.remove('show');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+</script>
+</body>
+</html>
