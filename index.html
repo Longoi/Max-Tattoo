@@ -1253,6 +1253,9 @@ function resetForm() {
   document.getElementById('sigWrap').classList.remove('err-sig');
   document.querySelectorAll('.section, #submitWrap').forEach(el => el.style.display = '');
   document.getElementById('successScreen').classList.remove('show');
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  btn.textContent = 'Abschicken & PDF erstellen';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
