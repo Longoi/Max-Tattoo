@@ -509,10 +509,15 @@ body {
     </div>
     <div class="section-body">
       <div class="field-grid">
-        <div class="field full">
-          <label>Vor- und Nachname</label>
-          <input type="text" id="name" placeholder="Max Mustermann" autocomplete="name">
-          <span class="err-msg" id="err-name">Bitte vollständigen Namen eingeben</span>
+        <div class="field">
+          <label>Vorname</label>
+          <input type="text" id="vorname" placeholder="Max" autocomplete="given-name">
+          <span class="err-msg" id="err-vorname">Bitte Vorname eingeben</span>
+        </div>
+        <div class="field">
+          <label>Nachname</label>
+          <input type="text" id="nachname" placeholder="Mustermann" autocomplete="family-name">
+          <span class="err-msg" id="err-nachname">Bitte Nachname eingeben</span>
         </div>
         <div class="field">
           <label>Geburtsdatum</label>
@@ -931,8 +936,11 @@ function fieldErr(id, show) {
 function validate() {
   let ok = true;
 
-  const nameOk = document.getElementById('name').value.trim().length > 1;
-  fieldErr('name', !nameOk); showErr('name', !nameOk); if (!nameOk) ok = false;
+  const vornameOk = document.getElementById('vorname').value.trim().length > 1;
+  fieldErr('vorname', !vornameOk); showErr('vorname', !vornameOk); if (!vornameOk) ok = false;
+
+  const nachnameOk = document.getElementById('nachname').value.trim().length > 1;
+  fieldErr('nachname', !nachnameOk); showErr('nachname', !nachnameOk); if (!nachnameOk) ok = false;
 
   const dobOk = !!document.getElementById('dob').value;
   fieldErr('dob', !dobOk); showErr('dob', !dobOk); if (!dobOk) ok = false;
@@ -1055,7 +1063,9 @@ function buildPDF() {
   doc.text('TÄTOWIERUNG', pw/2, 22, { align:'center' });
   y = 40;
 
-  const name     = document.getElementById('name').value.trim();
+  const vorname  = document.getElementById('vorname').value.trim();
+  const nachname = document.getElementById('nachname').value.trim();
+  const fullName = `${vorname} ${nachname}`;
   const dob      = document.getElementById('dob').value;
   
   // Fix for DD.MM.YYYY issue
@@ -1068,7 +1078,7 @@ function buildPDF() {
   // ── 1. Persönliche Angaben
   sectionHead('01', 'Persönliche Angaben');
   [
-    ['Name', name, 18],
+    ['Name', fullName, 18],
     ['Geburtsdatum', dobFmt, 30],
     ['Telefon', document.getElementById('phone').value.trim(), 18],
     ['Adresse', document.getElementById('address').value.trim(), 18],
@@ -1162,12 +1172,6 @@ async function submitForm() {
 
   // Generate PDF Base64
   const pdfBase64Data = buildPDF(); 
-  
-  // Split the full name into First and Last name
-  const fullName = document.getElementById('name').value.trim();
-  const nameParts = fullName.split(' ');
-  const firstName = nameParts.shift();
-  const lastName = nameParts.length > 0 ? nameParts.join(' ') : '-';
 
   // Helper to combine Yes/No with detail text and chips
   const getMedAnswer = (qKey, textId, chipsId) => {
@@ -1181,8 +1185,8 @@ async function submitForm() {
   // Build the payload matching the Cloudflare Worker (q4 removed)
   const payloadData = {
       email: document.getElementById('email').value.trim(),
-      vorname: firstName,
-      nachname: lastName,
+      vorname: document.getElementById('vorname').value.trim(),
+      nachname: document.getElementById('nachname').value.trim(),
       phone: document.getElementById('phone').value.trim(),
       address: document.getElementById('address').value.trim(),
       pdfBase64: pdfBase64Data,
@@ -1233,7 +1237,7 @@ async function submitForm() {
 // ── RESET ─────────────────────────────────────────────────
 function resetForm() {
   // q4-text removed from reset loop
-  ['name','dob','phone','address','email','q1-text','q2-text','q3-text'].forEach(id => {
+  ['vorname','nachname','dob','phone','address','email','q1-text','q2-text','q3-text'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
