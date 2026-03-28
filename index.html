@@ -172,9 +172,18 @@ body {
   transition: border-color 0.15s, background 0.15s;
   -webkit-appearance: none;
 }
-.field input:focus, .field textarea:focus { border-color: var(--black); background: var(--off); }
-.field input.err, .field textarea.err { border-color: var(--error); }
+.field input:focus, .field textarea:focus, .field select:focus { border-color: var(--black); background: var(--off); }
+.field input.err, .field textarea.err, .field select.err { border-color: var(--error); }
 .field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+/* Custom Dropdown Arrow */
+.field select {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%230c0c0c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
 
 /* ── PROSE ── */
 .prose {
@@ -507,6 +516,29 @@ body {
     </div>
     <div class="section-body">
       <div class="field-grid">
+        
+        <div class="field full">
+          <label>Dein Artist heute</label>
+          <select id="artistSelect" onchange="toggleGuestArtist()">
+            <option value="" disabled selected>Bitte auswählen...</option>
+            <option value="Max">Max</option>
+            <option value="Leon">Leon</option>
+            <option value="Olha">Olha</option>
+            <option value="Meli">Meli</option>
+            <option value="Nety">Nety</option>
+            <option value="Boris">Boris</option>
+            <option value="Gasttätowierer">Anderer / Gasttätowierer</option>
+          </select>
+          <span class="err-msg" id="err-artistSelect">Bitte wähle deinen Artist aus</span>
+        </div>
+
+        <div class="field full" id="guestArtistWrap" style="display: none; margin-top: -8px;">
+          <label>Name des Gasttätowierers</label>
+          <input type="text" id="guestArtistName" placeholder="Vorname / Name eintragen">
+          <span class="err-msg" id="err-guestArtistName">Bitte den Namen des Gasttätowierers eintragen</span>
+        </div>
+        
+        <div class="divider full" style="margin: 8px 0;"></div>
         <div class="field">
           <label>Vorname</label>
           <input type="text" id="vorname" placeholder="Max" autocomplete="given-name">
@@ -878,6 +910,20 @@ function toggleChk(id) {
 }
 function isChk(id) { return !!chks[id]; }
 
+// ── TOGGLE GUEST ARTIST ───────────────────────────────────
+function toggleGuestArtist() {
+  const select = document.getElementById('artistSelect');
+  const wrap = document.getElementById('guestArtistWrap');
+  if (select.value === 'Gasttätowierer') {
+    wrap.style.display = 'flex';
+  } else {
+    wrap.style.display = 'none';
+    document.getElementById('guestArtistName').value = '';
+    document.getElementById('guestArtistName').classList.remove('err');
+    showErr('guestArtistName', false);
+  }
+}
+
 // ── YES/NO ────────────────────────────────────────────────
 function setYN(q, val) {
   yns[q] = val;
@@ -944,6 +990,16 @@ function fieldErr(id, show) {
 function validate() {
   let ok = true;
 
+  // Artist Check
+  const artistVal = document.getElementById('artistSelect').value;
+  const artistOk = !!artistVal;
+  fieldErr('artistSelect', !artistOk); showErr('artistSelect', !artistOk); if (!artistOk) ok = false;
+  
+  if (artistVal === 'Gasttätowierer') {
+    const guestOk = document.getElementById('guestArtistName').value.trim().length > 1;
+    fieldErr('guestArtistName', !guestOk); showErr('guestArtistName', !guestOk); if (!guestOk) ok = false;
+  }
+
   const vornameOk = document.getElementById('vorname').value.trim().length > 1;
   fieldErr('vorname', !vornameOk); showErr('vorname', !vornameOk); if (!vornameOk) ok = false;
 
@@ -962,7 +1018,6 @@ function validate() {
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value.trim());
   fieldErr('email', !emailOk); showErr('email', !emailOk); if (!emailOk) ok = false;
 
-  // New Signature Date check
   const sigDateOk = !!document.getElementById('sigDate').value;
   fieldErr('sigDate', !sigDateOk); showErr('sigDate', !sigDateOk); if (!sigDateOk) ok = false;
 
@@ -1060,6 +1115,12 @@ function buildPDF() {
   doc.text('TÄTOWIERUNG', pw/2, 22, { align:'center' });
   y = 40;
 
+  // Get Artist Data
+  let finalArtist = document.getElementById('artistSelect').value;
+  if (finalArtist === 'Gasttätowierer') {
+      finalArtist = document.getElementById('guestArtistName').value.trim() + ' (Gasttätowierer)';
+  }
+
   const vorname  = document.getElementById('vorname').value.trim();
   const nachname = document.getElementById('nachname').value.trim();
   const fullName = `${vorname} ${nachname}`;
@@ -1071,7 +1132,6 @@ function buildPDF() {
     dobFmt = `${dd}.${mm}.${yyyy}`;
   }
 
-  // Format the new Signature Date
   const sigDateRaw = document.getElementById('sigDate').value;
   let sigDateFmt = '';
   if (sigDateRaw) {
@@ -1081,11 +1141,12 @@ function buildPDF() {
 
   sectionHead('01', 'Persönliche Angaben');
   [
-    ['Name', fullName, 18],
-    ['Geburtsdatum', dobFmt, 30],
-    ['Telefon', document.getElementById('phone').value.trim(), 18],
-    ['Adresse', document.getElementById('address').value.trim(), 18],
-    ['E-Mail', document.getElementById('email').value.trim(), 16],
+    ['Zuständiger Artist', finalArtist, 32],
+    ['Name des Kunden', fullName, 32],
+    ['Geburtsdatum', dobFmt, 32],
+    ['Telefon', document.getElementById('phone').value.trim(), 32],
+    ['Adresse', document.getElementById('address').value.trim(), 32],
+    ['E-Mail', document.getElementById('email').value.trim(), 32],
   ].forEach(([lbl, val, off]) => {
     checkPage();
     doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(136,136,136); doc.text(lbl.toUpperCase(), m, y);
@@ -1137,7 +1198,6 @@ function buildPDF() {
   doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(12,12,12);
   doc.text('UNTERSCHRIFT', m, y);
   
-  // Apply the newly formatted manual date to the PDF
   doc.setFont('helvetica','normal'); doc.setTextColor(136,136,136);
   doc.text('Datum: ' + sigDateFmt, pw - m, y, { align:'right' });
   
@@ -1149,7 +1209,6 @@ function buildPDF() {
   y += sigH + 6;
   doc.setFontSize(6.5); doc.setTextColor(180,180,180);
   
-  // Use the manual date in the footer timestamp as well
   doc.text('Erstellt: ' + sigDateFmt + ' — Dieses Dokument wurde digital ausgefüllt und unterschrieben.', m, y);
 
   const pdfDataUri = doc.output('datauristring');
@@ -1180,12 +1239,18 @@ async function submitForm() {
     return combined ? `Ja - ${combined}` : 'Ja';
   };
 
+  let finalArtist = document.getElementById('artistSelect').value;
+  if (finalArtist === 'Gasttätowierer') {
+      finalArtist = document.getElementById('guestArtistName').value.trim();
+  }
+
   const payloadData = {
+      artist: finalArtist, // <--- Add Artist to payload
       email: document.getElementById('email').value.trim(),
       vorname: document.getElementById('vorname').value.trim(),
       nachname: document.getElementById('nachname').value.trim(),
       dob: document.getElementById('dob').value, 
-      sigDate: document.getElementById('sigDate').value, // <--- Add new date to payload
+      sigDate: document.getElementById('sigDate').value,
       phone: document.getElementById('phone').value.trim(),
       address: document.getElementById('address').value.trim(),
       pdfBase64: pdfBase64Data,
@@ -1233,11 +1298,15 @@ async function submitForm() {
 
 // ── RESET ─────────────────────────────────────────────────
 function resetForm() {
-  ['vorname','nachname','dob','phone','address','email','q1-text','q2-text','q3-text'].forEach(id => {
+  ['vorname','nachname','dob','phone','address','email','q1-text','q2-text','q3-text','guestArtistName'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  setDefaultDate(); // Reset the signature date back to today
+  
+  document.getElementById('artistSelect').selectedIndex = 0;
+  document.getElementById('guestArtistWrap').style.display = 'none';
+
+  setDefaultDate(); 
   
   Object.keys(chks).forEach(k => { chks[k] = false; const el = document.getElementById(k); if(el) el.classList.remove('on','chk-err'); });
   Object.keys(yns).forEach(k => delete yns[k]);
