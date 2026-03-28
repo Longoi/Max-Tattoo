@@ -327,11 +327,9 @@ body {
 }
 .sig-hint.hidden { display: none; }
 .sig-actions {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: flex-end;
   margin-top: 10px;
 }
-.sig-date { font-size: 12px; color: var(--mid); font-weight: 300; }
-.sig-date strong { color: var(--black); font-weight: 500; }
 .btn-clear {
   font-family: 'Syne', sans-serif;
   font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
@@ -809,13 +807,19 @@ body {
       <span class="badge badge-req">Pflicht</span>
     </div>
     <div class="section-body">
+      
+      <div class="field" style="margin-bottom: 20px;">
+        <label>Datum der Unterschrift</label>
+        <input type="date" id="sigDate">
+        <span class="err-msg" id="err-sigDate">Bitte Datum auswählen</span>
+      </div>
+
       <div style="font-family:'Syne',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--mid);font-weight:700;margin-bottom:10px;">Bitte hier unterschreiben</div>
       <div class="sig-wrap" id="sigWrap">
         <canvas id="sigCanvas"></canvas>
         <div class="sig-hint" id="sigHint">Unterschrift</div>
       </div>
       <div class="sig-actions">
-        <div class="sig-date">Datum: <strong id="dateDisplay"></strong></div>
         <button class="btn-clear" onclick="clearSig()">Löschen</button>
       </div>
       <span class="err-msg" id="err-sig">Bitte unterschreiben</span>
@@ -881,7 +885,6 @@ function setYN(q, val) {
   document.getElementById(q+'-no').className  = 'yn-btn' + (!val ? ' active-no' : '');
   document.getElementById(q+'-expand').classList.toggle('open', val);
   document.getElementById('err-' + q).classList.remove('show');
-  // remove err borders
   document.getElementById(q+'-yes').classList.remove('err-border');
   document.getElementById(q+'-no').classList.remove('err-border');
 }
@@ -901,7 +904,7 @@ function getChips(containerId) {
 const canvas = document.getElementById('sigCanvas');
 const sigPad = new SignaturePad(canvas, { 
     penColor: '#0c0c0c', 
-    backgroundColor: 'rgb(249, 249, 249)', // Matches your --off CSS color
+    backgroundColor: 'rgb(249, 249, 249)',
     minWidth: 1.2, 
     maxWidth: 2.8 
 });
@@ -918,10 +921,15 @@ function clearSig() { sigPad.clear(); document.getElementById('sigHint').classLi
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-// ── DATE ──────────────────────────────────────────────────
-const today = new Date();
-const dateStr = today.toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'numeric' });
-document.getElementById('dateDisplay').textContent = dateStr;
+// ── DATE (AUTO-FILL SIGNATURE DATE) ──────────────────────
+function setDefaultDate() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  document.getElementById('sigDate').value = `${yyyy}-${mm}-${dd}`;
+}
+setDefaultDate();
 
 // ── VALIDATION ───────────────────────────────────────────
 function showErr(id, show) {
@@ -954,7 +962,10 @@ function validate() {
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value.trim());
   fieldErr('email', !emailOk); showErr('email', !emailOk); if (!emailOk) ok = false;
 
-  // Medical yes/no questions (q4 removed)
+  // New Signature Date check
+  const sigDateOk = !!document.getElementById('sigDate').value;
+  fieldErr('sigDate', !sigDateOk); showErr('sigDate', !sigDateOk); if (!sigDateOk) ok = false;
+
   ['q1','q2','q3','q5','q6'].forEach(q => {
     const answered = hasYN(q);
     showErr(q, !answered);
@@ -965,7 +976,6 @@ function validate() {
     }
   });
 
-  // Checkboxes
   ['chk-fit','chk-healthconfirm','chk-info','chk-consent','chk-dsgvo'].forEach(id => {
     const c = isChk(id);
     document.getElementById(id).classList.toggle('chk-err', !c);
@@ -993,14 +1003,6 @@ function buildPDF() {
     if (y + (needed || 8) > 276) { doc.addPage(); y = 20; return true; }
     return false;
   }
-  function addText(text, x, size, style, color) {
-    doc.setFontSize(size);
-    doc.setFont('helvetica', style || 'normal');
-    doc.setTextColor(...(color || [12,12,12]));
-    const lines = doc.splitTextToSize(text, cw - (x - m));
-    lines.forEach(line => { checkPage(); doc.text(line, x, y); y += lh; });
-    return y;
-  }
   function hRule() {
     doc.setDrawColor(216,216,216); doc.setLineWidth(0.25);
     doc.line(m, y, pw - m, y);
@@ -1017,21 +1019,16 @@ function buildPDF() {
     y += 10;
   }
   
-  // Custom drawn checkboxes fix the ampersand issue in PDF output!
   function checkLine(label, checked) {
     checkPage();
-    // 1. Draw the box
     doc.setDrawColor(12, 12, 12);
     doc.setLineWidth(0.3);
     doc.rect(m, y - 3.2, 3.5, 3.5);
-    
-    // 2. Draw the checkmark if checked
     if (checked) {
       doc.setLineWidth(0.4);
-      doc.line(m + 0.7, y - 1.8, m + 1.5, y - 0.5); // Short part of check
-      doc.line(m + 1.5, y - 0.5, m + 2.8, y - 2.8); // Long part of check
+      doc.line(m + 0.7, y - 1.8, m + 1.5, y - 0.5); 
+      doc.line(m + 1.5, y - 0.5, m + 2.8, y - 2.8); 
     }
-
     doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(12,12,12);
     doc.splitTextToSize(label, cw - 8).forEach(l => { doc.text(l, m + 6, y); y += lh; });
   }
@@ -1066,16 +1063,22 @@ function buildPDF() {
   const vorname  = document.getElementById('vorname').value.trim();
   const nachname = document.getElementById('nachname').value.trim();
   const fullName = `${vorname} ${nachname}`;
-  const dob      = document.getElementById('dob').value;
   
-  // Fix for DD.MM.YYYY issue
+  const dob = document.getElementById('dob').value;
   let dobFmt = '';
   if (dob) {
     const [yyyy, mm, dd] = dob.split('-');
     dobFmt = `${dd}.${mm}.${yyyy}`;
   }
 
-  // ── 1. Persönliche Angaben
+  // Format the new Signature Date
+  const sigDateRaw = document.getElementById('sigDate').value;
+  let sigDateFmt = '';
+  if (sigDateRaw) {
+    const [yyyy, mm, dd] = sigDateRaw.split('-');
+    sigDateFmt = `${dd}.${mm}.${yyyy}`;
+  }
+
   sectionHead('01', 'Persönliche Angaben');
   [
     ['Name', fullName, 18],
@@ -1091,12 +1094,10 @@ function buildPDF() {
   });
   y += 2; hRule();
 
-  // ── 2. Gesundheitsangaben
   sectionHead('02', 'Gesundheitsangaben');
   ynLine('Blutverdünnende Medikamente', yns['q1'], yns['q1'] ? document.getElementById('q1-text').value.trim() || '—' : null);
   ynLine('Andere Medikamente', yns['q2'], yns['q2'] ? document.getElementById('q2-text').value.trim() || '—' : null);
 
-  // Allergien
   const allergyChips = getChips('q3-expand');
   const allergyText  = document.getElementById('q3-text').value.trim();
   let allergyDetail  = '';
@@ -1106,7 +1107,6 @@ function buildPDF() {
   }
   ynLine('Bekannte Allergien', yns['q3'], allergyDetail || null);
 
-  // Vorerkrankungen (q4) has been removed here completely
   ynLine('Schwangerschaft / Stillen', yns['q5'], null);
   ynLine('Alkohol / Drogen / betäubende Substanzen heute', yns['q6'], null);
   y += 1;
@@ -1114,35 +1114,33 @@ function buildPDF() {
   checkLine('Alle Gesundheitsangaben vollständig und wahrheitsgemäß gemacht', true);
   y += 2; hRule();
 
-  // ── 3. Aufklärung
   sectionHead('03', 'Aufklärung');
   checkLine('Ich wurde umfassend aufgeklärt und habe alle Informationen gelesen und verstanden.', true);
   y += 2; hRule();
 
-  // ── 4. Einwilligung & AGB
   sectionHead('04', 'Einwilligung & AGB');
   checkLine('Ich willige ausdrücklich in die Durchführung der Tätowierung ein und erkenne die AGB vollumfänglich an.', true);
   y += 2; hRule();
 
-  // ── 5. Datenschutz
   sectionHead('05', 'Datenschutz');
   checkLine('Ich habe die Datenschutzerklärung gelesen und stimme der Verarbeitung meiner Daten gemäß DSGVO zu.', true);
   y += 2; hRule();
 
-  // ── 6. Fotos
   sectionHead('06', 'Fotos & Videos (Optional)');
   checkLine('Social Media', isChk('chk-social'));
   checkLine('Website des Studios', isChk('chk-website'));
   checkLine('Werbezwecke', isChk('chk-werbung'));
   y += 2; hRule();
 
-  // ── Unterschrift
   checkPage(50);
   y += 4;
   doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(12,12,12);
   doc.text('UNTERSCHRIFT', m, y);
+  
+  // Apply the newly formatted manual date to the PDF
   doc.setFont('helvetica','normal'); doc.setTextColor(136,136,136);
-  doc.text('Datum: ' + dateStr, pw - m, y, { align:'right' });
+  doc.text('Datum: ' + sigDateFmt, pw - m, y, { align:'right' });
+  
   y += 6;
   const sigH = 34;
   doc.setDrawColor(216,216,216); doc.setLineWidth(0.3);
@@ -1150,7 +1148,9 @@ function buildPDF() {
   doc.addImage(sigPad.toDataURL('image/jpeg', 0.6), 'JPEG', m + 2, y + 1, cw - 4, sigH - 2);
   y += sigH + 6;
   doc.setFontSize(6.5); doc.setTextColor(180,180,180);
-  doc.text('Erstellt: ' + dateStr + ' — Dieses Dokument wurde digital ausgefüllt und unterschrieben.', m, y);
+  
+  // Use the manual date in the footer timestamp as well
+  doc.text('Erstellt: ' + sigDateFmt + ' — Dieses Dokument wurde digital ausgefüllt und unterschrieben.', m, y);
 
   const pdfDataUri = doc.output('datauristring');
   const base64String = pdfDataUri.split(',')[1]; 
@@ -1170,10 +1170,8 @@ async function submitForm() {
   btn.disabled = true;
   btn.textContent = 'PDF wird erstellt und gesendet …';
 
-  // Generate PDF Base64
   const pdfBase64Data = buildPDF(); 
 
-  // Helper to combine Yes/No with detail text and chips
   const getMedAnswer = (qKey, textId, chipsId) => {
     if (yns[qKey] === false) return 'Nein';
     let detail = document.getElementById(textId) ? document.getElementById(textId).value.trim() : '';
@@ -1182,24 +1180,22 @@ async function submitForm() {
     return combined ? `Ja - ${combined}` : 'Ja';
   };
 
-  // Build the payload matching the Cloudflare Worker (q4 removed)
   const payloadData = {
       email: document.getElementById('email').value.trim(),
       vorname: document.getElementById('vorname').value.trim(),
       nachname: document.getElementById('nachname').value.trim(),
-      dob: document.getElementById('dob').value,
+      dob: document.getElementById('dob').value, 
+      sigDate: document.getElementById('sigDate').value, // <--- Add new date to payload
       phone: document.getElementById('phone').value.trim(),
       address: document.getElementById('address').value.trim(),
       pdfBase64: pdfBase64Data,
       
-      // Medical
       q1: getMedAnswer('q1', 'q1-text'),
       q2: getMedAnswer('q2', 'q2-text'),
       q3: getMedAnswer('q3', 'q3-text', 'q3-expand'),
       q5: yns['q5'] ? 'Ja' : 'Nein',
       q6: yns['q6'] ? 'Ja' : 'Nein',
 
-      // Checkboxes
       chkFit: isChk('chk-fit'),
       chkHealth: isChk('chk-healthconfirm'),
       chkInfo: isChk('chk-info'),
@@ -1237,15 +1233,15 @@ async function submitForm() {
 
 // ── RESET ─────────────────────────────────────────────────
 function resetForm() {
-  // q4-text removed from reset loop
   ['vorname','nachname','dob','phone','address','email','q1-text','q2-text','q3-text'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  setDefaultDate(); // Reset the signature date back to today
+  
   Object.keys(chks).forEach(k => { chks[k] = false; const el = document.getElementById(k); if(el) el.classList.remove('on','chk-err'); });
   Object.keys(yns).forEach(k => delete yns[k]);
   
-  // q4 removed from reset loop
   ['q1','q2','q3','q5','q6'].forEach(q => {
     document.getElementById(q+'-yes').className = 'yn-btn';
     document.getElementById(q+'-no').className  = 'yn-btn';
