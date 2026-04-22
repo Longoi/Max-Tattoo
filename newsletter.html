@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Newsletter & Updates — Ukiyo Tattoo Atelier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:   #0c0c0c;
+  --white:   #ffffff;
+  --off:     #f9f9f9;
+  --border:  #e0e0e0;
+  --mid:     #888888;
+  --light:   #f0f0f0;
+  --error:   #c0392b;
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--off);
+  color: var(--black);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+}
+.header-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 22px 0;
+}
+.header-logo {
+  width: 72px;
+  height: auto;
+  display: block;
+  flex-shrink: 0;
+  opacity: 0.92;
+}
+.header-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--black);
+  line-height: 1.2;
+}
+.header-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+/* ── LAYOUT ── */
+.form-wrapper {
+  max-width: 600px;
+  margin: 40px auto auto;
+  padding: 0 20px 80px;
+  width: 100%;
+}
+
+/* ── INTRO PROSE ── */
+.intro-text {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.intro-text h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.intro-text p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #444;
+  font-weight: 300;
+}
+.intro-text strong {
+  font-weight: 600;
+  color: var(--black);
+}
+
+/* ── SECTION ── */
+.section {
+  border: 1px solid var(--border);
+  background: var(--white);
+  padding: 32px;
+}
+
+/* ── FIELDS ── */
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field-grid .full { grid-column: 1 / -1; }
+.field { display: flex; flex-direction: column; gap: 7px; }
+
+.field label {
+  font-family: 'Syne', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+.field input {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 1px;
+  padding: 14px;
+  color: var(--black);
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  -webkit-appearance: none;
+}
+.field input:focus { border-color: var(--black); background: var(--off); }
+.field input.err { border-color: var(--error); }
+
+/* ── PRIVACY DETAILS & AGB BOX ── */
+.privacy-wrap {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--light);
+}
+.privacy-wrap summary {
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--mid);
+  cursor: pointer;
+  outline: none;
+  margin-bottom: 12px;
+}
+.privacy-wrap summary:hover { color: var(--black); }
+
+.agb-box {
+  background: var(--off);
+  border: 1px solid var(--border);
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 1px;
+}
+.agb-scroll {
+  max-height: 140px;
+  overflow-y: auto;
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: #555;
+  font-weight: 300;
+  padding-right: 8px;
+}
+.agb-scroll strong { color: var(--black); font-weight: 600; }
+.agb-scroll::-webkit-scrollbar { width: 3px; }
+.agb-scroll::-webkit-scrollbar-track { background: var(--light); }
+.agb-scroll::-webkit-scrollbar-thumb { background: var(--border); }
+
+/* ── CHECKBOX ── */
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  margin-top: 8px;
+}
+.chk-box {
+  width: 20px; height: 20px; min-width: 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 1px;
+  background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 1px;
+}
+.chk-box.on { background: var(--black); border-color: var(--black); }
+.chk-box svg { display: none; }
+.chk-box.on svg { display: block; }
+.chk-box.chk-err { border-color: var(--error); }
+
+.chk-label {
+  font-size: 12.5px;
+  line-height: 1.6;
+  font-weight: 400;
+  color: #444;
+  cursor: pointer;
+}
+
+/* ── ERRORS ── */
+.err-msg {
+  font-size: 10.5px; color: var(--error);
+  letter-spacing: 0.3px; margin-top: 5px; display: none;
+  font-weight: 400;
+}
+.err-msg.show { display: block; }
+
+/* ── SUBMIT ── */
+.submit-wrap { padding: 32px 0 0; text-align: center; }
+.btn-submit {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px; letter-spacing: 4px; text-transform: uppercase; font-weight: 700;
+  background: var(--black); color: var(--white);
+  border: none; padding: 20px 40px;
+  cursor: pointer; border-radius: 1px;
+  transition: all 0.2s;
+  width: 100%;
+}
+.btn-submit:hover { background: #222; letter-spacing: 5px; }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; letter-spacing: 4px; }
+
+/* ── SUCCESS ── */
+.success-screen {
+  display: none; text-align: center;
+  padding: 60px 32px;
+  border: 1px solid var(--border);
+  background: var(--white);
+}
+.success-screen.show { display: block; }
+.success-check {
+  width: 52px; height: 52px;
+  background: var(--black); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+}
+.success-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: -0.5px; margin-bottom: 12px;
+}
+.success-sub {
+  font-size: 14px; font-weight: 300; color: var(--mid);
+  line-height: 1.8; margin-bottom: 32px;
+}
+.btn-new {
+  font-family: 'Syne', sans-serif;
+  font-size: 9px; letter-spacing: 4px; text-transform: uppercase; font-weight: 700;
+  background: none; color: var(--black);
+  border: 1.5px solid var(--black); padding: 14px 32px;
+  cursor: pointer; border-radius: 1px;
+  transition: all 0.2s;
+}
+.btn-new:hover { background: var(--black); color: var(--white); }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 0 20px 40px;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  color: var(--mid);
+  text-transform: uppercase;
+  margin-top: auto;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 540px) {
+  .header { padding: 0 20px; }
+  .header-logo { width: 56px; }
+  .header-divider { height: 32px; }
+  .header h1 { font-size: 11px; letter-spacing: 2px; }
+  .field-grid { grid-template-columns: 1fr; }
+  .section { padding: 24px 20px; }
+  .form-wrapper { padding: 0 16px 80px; margin-top: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <img src="IMG_3616.JPG" class="header-logo" alt="Ukiyo Tattoo Atelier Logo">
+    <div class="header-divider"></div>
+    <div class="header-text">
+      <h1>Ukiyo Atelier</h1>
+      <div class="header-sub">Newsletter & Updates</div>
+    </div>
+  </div>
+</div>
+
+<div class="form-wrapper" id="formWrapper">
+
+  <div class="intro-text" id="introText">
+    <h2>Hol dir deine Gratis Tattoo-Creme!</h2>
+    <p>Trag dich hier ein und erhalte bei deiner <strong>nächsten Terminbuchung</strong> eine hochwertige Tattoo-Pflegecreme geschenkt. Außerdem erfährst du als Erstes von neuen Wanna-Dos und Guest Artists.</p>
+  </div>
+
+  <div class="section" id="formSection">
+    <div class="field-grid">
+      <div class="field">
+        <label>Vorname</label>
+        <input type="text" id="vorname" placeholder="Max" autocomplete="given-name">
+        <span class="err-msg" id="err-vorname">Bitte Vorname eingeben</span>
+      </div>
+      <div class="field">
+        <label>Nachname</label>
+        <input type="text" id="nachname" placeholder="Mustermann" autocomplete="family-name">
+        <span class="err-msg" id="err-nachname">Bitte Nachname eingeben</span>
+      </div>
+      <div class="field full">
+        <label>E-Mail-Adresse</label>
+        <input type="email" id="email" placeholder="max@beispiel.de" autocomplete="email" autocapitalize="none">
+        <span class="err-msg" id="err-email">Bitte gültige E-Mail eingeben</span>
+      </div>
+    </div>
+
+    <details class="privacy-wrap">
+      <summary>Datenschutzerklärung lesen</summary>
+      <div class="agb-box">
+        <div class="agb-scroll">
+          <strong>1. Verantwortlicher</strong><br>Ukiyo Tattoo Atelier, Inhaber: Max Lehn, Tannenstr. 2, 88085 Langenargen, E-Mail: max.lehn13@gmail.com.<br><br>
+          <strong>2. Allgemeines zur Datenverarbeitung</strong><br>Wir verarbeiten personenbezogene Daten ausschließlich im Rahmen der gesetzlichen Bestimmungen der Datenschutz-Grundverordnung (DSGVO).<br><br>
+          <strong>3. Erhebung und Verarbeitung</strong><br>Für die Anmeldung zum Newsletter erheben wir deinen Vor- und Nachnamen sowie deine E-Mail-Adresse. Diese Daten werden ausschließlich für den Versand von E-Mails zu Wanna-Dos, Guest Artists, Gewinnspielen und Studio-Updates genutzt.<br><br>
+          <strong>4. Speichersysteme und Drittanbieter</strong><br>Zur Verarbeitung und für den Newsletter-Versand nutzen wir Systeme wie Brevo. Mit dem Dienstleister besteht ein Auftragsverarbeitungsvertrag.<br><br>
+          <strong>5. Speicherung, Löschung und Widerruf</strong><br>Deine Daten werden so lange gespeichert, bis du dich vom Newsletter abmeldest. Du kannst deine Einwilligung jederzeit widerrufen (z. B. über den Abmeldelink in jeder E-Mail).<br><br>
+          <strong>6. Deine Rechte</strong><br>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit und den Widerruf erteilter Einwilligungen.
+        </div>
+      </div>
+    </details>
+
+    <div class="check-row">
+      <div class="chk-box" id="chk-dsgvo" onclick="toggleChk('chk-dsgvo')">
+        <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5l3 3L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="chk-label" onclick="toggleChk('chk-dsgvo')">
+        Ich habe die Datenschutzerklärung gelesen und stimme zu, dass Ukiyo Tattoo Atelier meine Daten für Newsletter-Zwecke speichern darf. Ich kann mich jederzeit abmelden.
+      </span>
+    </div>
+    <span class="err-msg" id="err-chk-dsgvo">Bitte bestätigen, um fortzufahren.</span>
+
+    <div class="submit-wrap">
+      <button class="btn-submit" id="submitBtn" onclick="submitForm()">Jetzt Eintragen</button>
+    </div>
+  </div>
+
+  <div class="success-screen" id="successScreen">
+    <div class="success-check">
+      <svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M2 9l6 6L20 2" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="success-title">Fast geschafft!</div>
+    <div class="success-sub">Bitte bestätige noch kurz deine E-Mail-Adresse über den Link, den wir dir gerade geschickt haben.</div>
+    <button class="btn-new" onclick="resetForm()">Nächste Anmeldung</button>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div>Ukiyo Tattoo Atelier · DSGVO-konform</div>
+</div>
+
+<script>
+let dsgvoChecked = false;
+
+function toggleChk(id) {
+  dsgvoChecked = !dsgvoChecked;
+  document.getElementById(id).classList.toggle('on', dsgvoChecked);
+  document.getElementById('err-chk-dsgvo').classList.remove('show');
+}
+
+function fieldErr(id, show) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('err', show);
+  const errEl = document.getElementById('err-' + id);
+  if (errEl) errEl.classList.toggle('show', show);
+}
+
+function validate() {
+  let ok = true;
+
+  const vorname = document.getElementById('vorname').value.trim();
+  const vornameOk = vorname.length > 1;
+  fieldErr('vorname', !vornameOk); 
+  if (!vornameOk) ok = false;
+
+  const nachname = document.getElementById('nachname').value.trim();
+  const nachnameOk = nachname.length > 1;
+  fieldErr('nachname', !nachnameOk); 
+  if (!nachnameOk) ok = false;
+
+  const email = document.getElementById('email').value.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  fieldErr('email', !emailOk); 
+  if (!emailOk) ok = false;
+
+  if (!dsgvoChecked) {
+    document.getElementById('chk-dsgvo').classList.add('chk-err');
+    document.getElementById('err-chk-dsgvo').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('chk-dsgvo').classList.remove('chk-err');
+  }
+
+  return ok;
+}
+
+async function submitForm() {
+  if (!validate()) return;
+  
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet...';
+
+  const payloadData = {
+      type: 'newsletter_signup', 
+      vorname: document.getElementById('vorname').value.trim(),
+      nachname: document.getElementById('nachname').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      consent_dsgvo: true
+  };
+
+  try {
+    const response = await fetch("https://tattoo-form-backend.long200291.workers.dev/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payloadData)
+    });
+
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('introText').style.display = 'none';
+    document.getElementById('successScreen').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch (error) {
+    alert("Verbindungsfehler. Bitte überprüfe deine Internetverbindung.");
+    btn.disabled = false;
+    btn.textContent = 'Jetzt Eintragen';
+  }
+}
+
+function resetForm() {
+  document.getElementById('vorname').value = '';
+  document.getElementById('nachname').value = '';
+  document.getElementById('email').value = '';
+  
+  dsgvoChecked = false;
+  document.getElementById('chk-dsgvo').classList.remove('on', 'chk-err');
+  
+  // Collapse the privacy policy details if it was opened
+  const privacyDetails = document.querySelector('.privacy-wrap');
+  if (privacyDetails) privacyDetails.removeAttribute('open');
+  
+  document.querySelectorAll('.err-msg').forEach(e => e.classList.remove('show'));
+  document.querySelectorAll('.err').forEach(e => e.classList.remove('err'));
+  
+  document.getElementById('formSection').style.display = 'block';
+  document.getElementById('introText').style.display = 'block';
+  document.getElementById('successScreen').classList.remove('show');
+  
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  btn.textContent = 'Jetzt Eintragen';
+}
+</script>
+</body>
+</html>
